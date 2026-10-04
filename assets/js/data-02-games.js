@@ -6,7 +6,6 @@
 MUSEUM_CATEGORIES.push({
   id: "games",
   name: "游戏",
-  icon: "🎮",
   note: "独立游戏、免费网页游戏、开源作品与游戏史料，从试玩到考据一应俱全。",
   sites: [
     // 独立与网页游戏
@@ -78,7 +77,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "screen",
   name: "影视与动画",
-  icon: "🎬",
   note: "公共广播、纪录片、电影资料库与合法免费观影资源，影迷与研究者的入口。",
   sites: [
     // 影视数据库与评分
@@ -129,7 +127,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "music",
   name: "音乐与声音",
-  icon: "🎵",
   note: "音乐数据库、公共领域录音、乐谱与全球电台，免费声音资源的总入口。",
   sites: [
     // 音乐数据库
@@ -182,7 +179,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "visual",
   name: "图片与视觉",
-  icon: "📷",
   note: "公共领域图库、老照片档案、地图影像与字体素材，可自由使用的视觉资源。",
   sites: [
     // 公共领域图库

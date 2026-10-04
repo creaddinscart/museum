@@ -3,7 +3,6 @@
 MUSEUM_CATEGORIES.push({
   id: "heritage",
   name: "博物馆与文化遗产",
-  icon: "🏛",
   note: "收录全球博物馆官网、数字馆藏、世界遗产与考古建筑资源",
   sites: [
     ["卢浮宫", "https://www.louvre.fr", "巴黎卢浮宫官方网站，可检索数十万件藏品记录，并提供《蒙娜丽莎》等名作的在线虚拟参观。", "法国", "fr", ["艺术", "馆藏", "虚拟导览"]],
@@ -52,7 +51,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "reading",
   name: "阅读与文献",
-  icon: "📚",
   note: "收录公共图书馆、电子书、古籍善本与开放学术文献资源",
   sites: [
     ["Project Gutenberg", "https://www.gutenberg.org", "全球最早的志愿电子书图书馆，提供七万余种公共领域书籍的免费在线阅读与下载。", "美国", "en", ["电子书", "公共领域", "经典"]],
@@ -89,7 +87,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "learning",
   name: "学习与教育",
-  icon: "🎓",
   note: "收录公开课、在线课程、语言学习与开放教科书平台",
   sites: [
     ["可汗学院", "https://www.khanacademy.org", "非营利在线学习平台，提供数学、科学、计算机等学科的免费课程视频与自适应练习。", "美国", "en", ["公开课", "练习", "基础教育"]],
@@ -126,7 +123,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "science",
   name: "科学与研究",
-  icon: "🧪",
   note: "收录科研机构、论文预印本、科学数据库与权威科普站点",
   sites: [
     ["arXiv", "https://arxiv.org", "康奈尔大学运营的预印本平台，收录物理、数学、计算机与定量生物学论文，全部开放获取。", "美国", "en", ["预印本", "论文", "开放获取"]],

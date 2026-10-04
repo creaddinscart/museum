@@ -140,125 +140,130 @@
     $('gate').hidden = true;
     $('app').hidden = false;
     $('countryLabel').textContent = countryName(state.country);
+    renderTabs();
     renderCats();
     render();
   }
 
+  function renderTabs() {
+    $('btnAll').classList.toggle('on', state.view !== 'fav');
+    $('btnFav').classList.toggle('on', state.view === 'fav');
+  }
+
   function renderCats() {
     var cats = visibleCats();
-    var total = allSites(cats).length;
-    var html = '<button class="chip' + (state.view === 'all' ? ' on' : '') +
-      '" data-view="all" type="button">全部 ' + total + '</button>';
-
-    html += '<button class="chip' + (state.view === 'fav' ? ' on' : '') +
-      '" data-view="fav" type="button">★ 我的收藏</button>';
+    var sep = '<span class="sep"> · </span>';
+    var items = ['<button type="button" data-view="all"' +
+      (state.view === 'all' ? ' class="on"' : '') + '>全部</button>'];
 
     cats.forEach(function (c) {
-      html += '<button class="chip' + (state.view === c.id ? ' on' : '') +
-        '" data-view="' + esc(c.id) + '" type="button">' +
-        esc(c.icon || '') + ' ' + esc(c.name) + ' ' + c.sites.length + '</button>';
+      items.push('<button type="button" data-view="' + esc(c.id) + '"' +
+        (state.view === c.id ? ' class="on"' : '') + '>' +
+        esc(c.name) + '（' + c.sites.length + '）</button>');
     });
-    $('cats').innerHTML = html;
+
+    $('cats').innerHTML = '<span class="label">展区：</span>' + items.join(sep);
   }
 
   function siteHtml(entry, showCat) {
     var c = entry.cat, s = entry.site;
-    var tags = (s[5] || []).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('');
     var on = state.favs.has(s[1]);
-    return '<article class="site">' +
-      '<div>' +
-        '<h3><a href="' + esc(s[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(s[0]) +
-        '</a><span class="host">' + esc(hostOf(s[1])) + '</span></h3>' +
-        '<p>' + esc(s[2]) + '</p>' +
-        '<div class="meta">' +
-          (showCat ? '<span>' + esc(c.icon || '') + ' ' + esc(c.name) + '</span>' : '') +
-          '<span>' + esc(s[3]) + '</span>' +
-          '<span>' + esc(s[4]) + '</span>' +
-          tags +
-        '</div>' +
-      '</div>' +
+    var tags = (s[5] || []).map(function (t) {
+      return '<span class="t">' + esc(t) + '</span>';
+    }).join('');
+
+    return '<li>' +
+      '<a class="ext sitename" href="' + esc(s[1]) + '" target="_blank" rel="noopener noreferrer">' +
+        esc(s[0]) + '</a>' +
+      '<span class="host">' + esc(hostOf(s[1])) + '</span>' +
       '<button class="star' + (on ? ' on' : '') + '" type="button" data-fav="' + esc(s[1]) +
         '" title="收藏 / 取消收藏" aria-label="收藏">' + (on ? '★' : '☆') + '</button>' +
-    '</article>';
+      '<div class="desc">' + esc(s[2]) + '</div>' +
+      '<div class="meta">' +
+        (showCat ? esc(c.name) + ' · ' : '') +
+        esc(s[3]) + ' · ' + esc(s[4]) +
+        (tags ? ' · ' + tags : '') +
+      '</div>' +
+    '</li>';
   }
 
   function catHeader(cat, extra) {
-    return '<div class="cat-title"><h2>' + esc(cat.icon || '') + ' ' + esc(cat.name) +
-      '</h2><span class="n">' + cat.sites.length + ' 件</span></div>' +
-      (cat.note ? '<p class="cat-note">' + esc(cat.note) + '</p>' : '') +
+    return '<h2 class="sec">' + esc(cat.name) +
+      '<span class="n">' + cat.sites.length + ' 条</span></h2>' +
+      (cat.note ? '<p class="sec-note">' + esc(cat.note) + '</p>' : '') +
       (extra || '');
   }
 
   function cryptoNotice() {
     var tier = cryptoTier();
     if (tier === 'warn') {
-      return '<p class="notice">⚠️ 你选择的地区（' + esc(countryName(state.country)) +
-        '）对加密货币有额外限制或征税规定。以下站点为客观收录，<b>不构成投资建议</b>，请先确认当地法律。</p>';
+      return '<div class="ambox">你选择的地区（' + esc(countryName(state.country)) +
+        '）对加密货币有额外限制或征税规定。以下站点为客观收录，<b>不构成投资建议</b>，请先确认当地法律。</div>';
     }
     if (tier === 'blocked') {
-      return '<p class="notice">你选择的地区（' + esc(countryName(state.country)) +
-        '）禁止或严格限制加密货币相关活动，该展区已隐藏。</p>';
+      return '<div class="ambox">你选择的地区（' + esc(countryName(state.country)) +
+        '）禁止或严格限制加密货币相关活动，该展区已隐藏。</div>';
     }
     return '';
   }
 
   function render() {
     var cats = visibleCats();
-    var box = $('content');
     var q = state.query.trim();
     var html = '';
     var shown = 0;
 
+    function listing(sites, cat, showCat) {
+      return '<ul class="entries">' + sites.map(function (s) {
+        return siteHtml({ cat: cat, site: s }, showCat);
+      }).join('') + '</ul>';
+    }
+
     if (state.view === 'fav') {
-      var favEntries = allSites(cats).filter(function (e) { return state.favs.has(e.site[1]); })
+      var favs = allSites(cats)
+        .filter(function (e) { return state.favs.has(e.site[1]); })
         .filter(function (e) { return matches(e.site, q); });
-      html += '<div class="cat-title"><h2>★ 我的收藏</h2><span class="n">' +
-        favEntries.length + ' 件</span></div>';
-      html += favEntries.length
-        ? favEntries.map(function (e) { return siteHtml(e, true); }).join('')
-        : '<p class="empty-tip">还没有收藏。点条目右侧的 ☆ 就能把展品收进这里（存在你自己的浏览器里）。</p>';
-      shown = favEntries.length;
+      html += '<h2 class="sec">我的收藏<span class="n">' + favs.length + ' 条</span></h2>';
+      html += favs.length
+        ? '<ul class="entries">' + favs.map(function (e) { return siteHtml(e, true); }).join('') + '</ul>'
+        : '<p class="empty">还没有收藏。点条目右侧的 ☆ 就能把展品收进这里（存在你自己的浏览器里）。</p>';
+      shown = favs.length;
 
     } else if (q) {
       var hits = allSites(cats).filter(function (e) { return matches(e.site, q); });
-      html += '<div class="cat-title"><h2>🔍 “' + esc(q) + '”</h2><span class="n">' +
-        hits.length + ' 件</span></div>';
+      html += '<h2 class="sec">搜索“' + esc(q) + '”<span class="n">' + hits.length + ' 条</span></h2>';
       html += hits.length
-        ? hits.map(function (e) { return siteHtml(e, true); }).join('')
-        : '<p class="empty-tip">没有找到。试试更短的关键词，例如「地图」「开源」「爵士」。</p>';
+        ? '<ul class="entries">' + hits.map(function (e) { return siteHtml(e, true); }).join('') + '</ul>'
+        : '<p class="empty">没有找到。试试更短的关键词，例如「地图」「开源」「爵士」。</p>';
       shown = hits.length;
 
     } else if (state.view === 'all') {
       if (cryptoTier() === 'blocked') html += cryptoNotice();
       cats.forEach(function (c) {
-        var extra = c.restricted ? cryptoNotice() : '';
-        html += catHeader(c, extra);
-        html += c.sites.map(function (s, i) {
-          return siteHtml({ cat: c, site: s }, false);
-        }).join('');
+        html += catHeader(c, c.restricted ? cryptoNotice() : '');
+        html += listing(c.sites, c, false);
         shown += c.sites.length;
       });
 
     } else {
       var cat = cats.filter(function (c) { return c.id === state.view; })[0];
-      if (!cat) { state.view = 'all'; renderCats(); return render(); }
+      if (!cat) { state.view = 'all'; renderCats(); renderTabs(); return render(); }
       html += catHeader(cat, cat.restricted ? cryptoNotice() : '');
-      html += cat.sites.map(function (s) { return siteHtml({ cat: cat, site: s }, false); }).join('');
+      html += listing(cat.sites, cat, false);
       shown = cat.sites.length;
     }
 
-    box.innerHTML = html;
+    $('content').innerHTML = html;
 
     var label = state.view === 'fav' ? '我的收藏'
       : state.view === 'all' ? '全部展区'
       : (cats.filter(function (c) { return c.id === state.view; })[0] || {}).name || '';
-    $('count').textContent = '当前显示 ' + shown + ' 件 · 博物馆共 ' +
-      allSites(cats).length + ' 件 · ' + cats.length + ' 个展区' +
+    $('count').textContent = '本页显示 ' + shown + ' 条 · 共收录 ' +
+      allSites(cats).length + ' 条 · ' + cats.length + ' 个展区' +
       (label ? ' · ' + label : '') + ' · 地区：' + countryName(state.country);
     $('favCount').textContent = state.favs.size;
 
-    var tier = cryptoTier();
-    if (tier === 'blocked' && !$('content').querySelector('.notice')) {
+    if (cryptoTier() === 'blocked' && !$('content').querySelector('.ambox')) {
       $('count').textContent += ' · 加密货币展区已按当地法规隐藏';
     }
   }
@@ -284,6 +289,7 @@
       state.view = b.dataset.view;
       state.query = '';
       $('search').value = '';
+      renderTabs();
       renderCats();
       render();
       scrollTo({ top: 0, behavior: 'smooth' });
@@ -306,10 +312,20 @@
       if (state.view === 'fav') render();
     });
 
+    $('btnAll').addEventListener('click', function () {
+      state.view = 'all';
+      state.query = '';
+      $('search').value = '';
+      renderTabs();
+      renderCats();
+      render();
+    });
+
     $('btnFav').addEventListener('click', function () {
       state.view = 'fav';
       state.query = '';
       $('search').value = '';
+      renderTabs();
       renderCats();
       render();
       scrollTo({ top: 0, behavior: 'smooth' });

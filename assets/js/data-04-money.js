@@ -2,7 +2,6 @@
 MUSEUM_CATEGORIES.push({
   id: "finance",
   name: "金融与经济",
-  icon: "💰",
   note: "官方经济数据、市场行情、财经媒体与个人理财计算工具。",
   sites: [
     ["国际货币基金组织", "https://www.imf.org", "IMF 官方网站，发布世界经济展望、金融稳定报告与各国宏观经济数据，是研究全球经济的一手来源。", "国际组织", "en", ["经济", "国际组织", "报告"]],
@@ -47,7 +46,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "crypto",
   name: "加密货币与区块链",
-  icon: "₿",
   note: "交易所、行情数据、区块浏览器与开发教育资源，仅供了解与研究。",
   restricted: true,
   sites: [
@@ -100,7 +98,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "news",
   name: "新闻与信息",
-  icon: "📰",
   note: "公共广播、通讯社、独立媒体与事实核查机构官方网站。",
   sites: [
     ["路透社", "https://www.reuters.com", "全球三大通讯社之一，以快速、准确的市场与突发新闻著称，常被各国媒体引用。", "英国", "en", ["通讯社", "国际", "新闻"]],
@@ -140,7 +137,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "gov",
   name: "政府与公共资源",
-  icon: "🏢",
   note: "各国政府门户、法律法规、统计机构与国际组织官网。",
   sites: [
     ["美国政府门户", "https://www.usa.gov", "美国联邦政府官方入口，汇总各类政务服务、福利申请与联邦机构链接。", "美国", "en", ["政府", "政务服务", "美国"]],

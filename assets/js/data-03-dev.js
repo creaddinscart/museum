@@ -2,7 +2,6 @@
 MUSEUM_CATEGORIES.push({
   id: "dev",
   name: "编程与开发",
-  icon: "💻",
   note: "文档、代码托管、开源社区与学习平台，程序员常用资源集合。",
   sites: [
     ["GitHub", "https://github.com", "全球最大的代码托管与协作平台，支持 Git 版本控制、代码审查与持续集成，是参与开源项目的主要入口。", "美国", "en", ["代码托管", "开源", "协作"]],
@@ -72,7 +71,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "ai",
   name: "人工智能",
-  icon: "🤖",
   note: "大模型、研究机构、开源模型与 AI 伦理，追踪人工智能进展。",
   sites: [
     ["Anthropic", "https://www.anthropic.com", "开发 Claude 系列模型的人工智能安全公司，发布模型卡、对齐研究与安全政策文件，可了解大模型安全研究进展。", "美国", "en", ["AI 安全", "研究", "Claude"]],
@@ -112,7 +110,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "tools",
   name: "工具与效率",
-  icon: "🛠",
   note: "在线转换、笔记、看板与安全工具，提升日常工作效率。",
   sites: [
     ["TinyPNG", "https://tinypng.com", "在线批量压缩 PNG 与 JPEG 图片，在肉眼几乎无损的前提下显著减小体积，拖拽即可使用。", "荷兰", "en", ["图片压缩", "在线工具", "优化"]],
@@ -161,7 +158,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "opendata",
   name: "数据与开放数据",
-  icon: "📊",
   note: "政府开放数据、国际组织统计与可视化工具，用数据认识世界。",
   sites: [
     ["世界银行开放数据", "https://data.worldbank.org", "世界银行的全球发展数据库，提供各国经济、教育、卫生等上千项指标，可免费下载与在线绘图。", "国际组织", "en", ["经济", "统计", "开放数据"]],

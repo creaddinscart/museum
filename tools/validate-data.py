@@ -211,10 +211,9 @@ def main():
         for block in blocks:
             cat_id = field(block, "id")
             cat_name = field(block, "name")
-            icon = field(block, "icon")
             note = field(block, "note")
 
-            for key, val in (("id", cat_id), ("name", cat_name), ("icon", icon), ("note", note)):
+            for key, val in (("id", cat_id), ("name", cat_name), ("note", note)):
                 if not val:
                     errors.append("%s 展区缺少 %s 字段" % (where, key))
             if cat_id:

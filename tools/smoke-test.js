@@ -87,7 +87,13 @@ if (typeof URLSearchParams === 'undefined') {
   };
 }
 if (typeof URL === 'undefined') {
-  window.URL = function (s) { this.href = s; this.searchParams = { set: function () {}, delete: function () {} }; };
+  // 只实现 app.js 用到的部分：hostname 与 searchParams
+  window.URL = function (s) {
+    this.href = String(s);
+    var m = /^[a-z]+:\/\/([^/?#]+)/i.exec(this.href);
+    this.hostname = m ? m[1].replace(/:\d+$/, '') : '';
+    this.searchParams = { set: function () {}, delete: function () {} };
+  };
   window.URL.prototype.toString = function () { return this.href; };
 }
 
@@ -113,7 +119,7 @@ var keyProblems = [];
 CATS.forEach(function (c) {
   if (ids[c.id]) keyProblems.push('展区 id 重复：' + c.id);
   ids[c.id] = true;
-  if (!c.name || !c.icon || !c.sites.length) keyProblems.push('展区字段缺失：' + c.id);
+  if (!c.name || !c.note || !c.sites.length) keyProblems.push('展区字段缺失：' + c.id);
   var seen = {};
   c.sites.forEach(function (s) {
     if (s.length !== 6) keyProblems.push(c.id + ' 出现非 6 元组条目');
@@ -185,7 +191,11 @@ print('\n[5] 选择美国：加密货币展区出现');
 r = boot('US');
 ok(r.cats.indexOf('加密货币') >= 0, '展区导航里有加密货币');
 ok(r.content.indexOf('Etherscan') >= 0, '加密货币展品已渲染');
-ok(r.content.indexOf('投资建议') < 0 || true, '（加密货币展区已渲染）');
+ok(r.content.indexOf('<span class="host">louvre.fr</span>') >= 0,
+  '域名从 URL 里正确解析（去掉 https:// 与 www.）');
+ok(r.content.indexOf('<h2 class="sec">') >= 0, '展区标题用维基式的 h2.sec');
+ok(r.content.indexOf('<ul class="entries">') >= 0, '条目用项目符号列表');
+ok(r.content.indexOf('class="ext sitename"') >= 0, '外链带 ext 类（渲染外链箭头）');
 
 print('\n[6] 选择土耳其（受限但不禁）：展区出现并附风险提示');
 r = boot('TR');

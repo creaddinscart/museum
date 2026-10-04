@@ -2,7 +2,6 @@
 MUSEUM_CATEGORIES.push({
   id: "public",
   name: "公益与社会",
-  icon: "🌍",
   note: "收录公益、人权、环保、开放知识与无障碍领域的组织与平台。",
   sites: [
     ["维基百科", "https://www.wikipedia.org", "由全球志愿者协作编写的自由百科全书，覆盖三百多种语言，人人可编辑、可免费查阅。", "全球", "多语言", ["百科", "协作", "自由知识"]],
@@ -40,7 +39,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "life",
   name: "健康与生活",
-  icon: "🌱",
   note: "收录权威医疗信息、心理健康、运动营养与急救戒烟资源。",
   sites: [
     ["世界卫生组织", "https://www.who.int", "联合国公共卫生机构，发布全球健康数据、疾病防治指南与健康主题科普。", "国际组织", "多语言", ["公共卫生", "健康", "联合国"]],
@@ -76,7 +74,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "search",
   name: "搜索与导航",
-  icon: "🔍",
   note: "收录搜索引擎、学术检索、隐私搜索与网页存档工具。",
   sites: [
     ["Google", "https://www.google.com", "全球使用最广泛的搜索引擎，支持网页、图片、地图等多类型与多语言检索。", "美国", "多语言", ["搜索引擎", "综合", "多语言"]],
@@ -108,7 +105,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "fun",
   name: "冷门与趣味",
-  icon: "🎲",
   note: "收录无聊网站、奇趣工具、可视化玩具与复古互联网。",
   sites: [
     ["无用网站", "https://theuselessweb.com", "点一下按钮就随机跳转到一个无用但有趣的网站，是打发时间的经典入口。", "全球", "en", ["无聊", "随机", "解压"]],
@@ -153,7 +149,6 @@ MUSEUM_CATEGORIES.push({
 MUSEUM_CATEGORIES.push({
   id: "space",
   name: "航天与探索",
-  icon: "🚀",
   note: "收录航天机构、实时天文数据、发射直播与深空影像。",
   sites: [
     ["NASA", "https://www.nasa.gov", "美国国家航空航天局官网，发布任务进展、深空影像与丰富的航天科普资源。", "美国", "en", ["航天", "探索", "官方"]],

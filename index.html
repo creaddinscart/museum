@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>数字博物馆 · 全球有价值的网站收藏</title>
-<meta name="description" content="数字博物馆收录全球几百个有价值的网站：博物馆、游戏、金融、加密货币、科学、音乐、工具……按展区陈列，免费公开。">
-<meta name="theme-color" content="#16202c">
+<title>数字博物馆</title>
+<meta name="description" content="收录全球 703 个有价值的网站：博物馆、游戏、金融、加密货币、科学、音乐、工具……按 21 个展区陈列，免费公开。">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icon.svg">
 <link rel="canonical" href="https://m.shit.pub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="数字博物馆">
-<meta property="og:description" content="收藏全球几百个有价值的网站，按展区陈列。">
+<meta property="og:description" content="收录全球 703 个有价值的网站，按展区陈列。">
 <meta property="og:url" content="https://m.shit.pub/">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -20,62 +20,63 @@
 <!-- ========== 入场：选择国家或地区 ========== -->
 <section class="gate" id="gate">
   <div class="gate-box">
-    <img class="gate-icon" src="assets/icon.svg" alt="数字博物馆" width="64" height="64">
     <h1>欢迎来到数字博物馆</h1>
     <p class="gate-url">https://m.shit.pub</p>
 
     <p class="gate-intro">
-      这里陈列着全球几百个真正有价值的网站：博物馆、游戏、金融、加密货币、科学、音乐、工具……
-      全部免费公开，长期维护。<br><br>
-      不同国家和地区对<b>加密货币</b>等内容的法规不同。请先选择你所在的<b>国家或地区</b>，
+      这里收录全球几百个有价值的网站：博物馆、游戏、金融、加密货币、科学、音乐、工具……
+      免费公开，长期维护。<br><br>
+      不同国家和地区对<b>加密货币</b>等内容的法规不同。请先选择所在的<b>国家或地区</b>，
       博物馆会据此调整展区。
     </p>
 
-    <input class="gate-search" id="gateSearch" type="search" placeholder="输入国家或地区名称 / 代码…" autocomplete="off" spellcheck="false">
+    <input class="gate-search" id="gateSearch" type="search" placeholder="搜索国家或地区名称 / 代码…" autocomplete="off" spellcheck="false">
     <ul class="gate-list" id="gateList"></ul>
 
     <p class="gate-foot">
       选择只保存在你自己的浏览器里（localStorage），不会上传到任何服务器。<br>
-      随时可以点顶栏的「国家 / 地区」更改。
+      随时可以点顶部的「地区」更改。
     </p>
   </div>
 </section>
 
 <!-- ========== 博物馆 ========== -->
 <div id="app" hidden>
-  <header class="bar">
-    <div class="bar-inner">
-      <div class="brand">
-        <img src="assets/icon.svg" alt="" width="26" height="26">
-        <span>数字博物馆</span>
+  <div class="wrap">
+    <header class="site-head">
+      <img src="assets/icon.svg" alt="" width="44" height="44">
+      <div>
+        <h1 class="wordmark">数字博物馆</h1>
+        <p class="tagline">自由的网站收藏</p>
       </div>
-      <div class="bar-spacer"></div>
-      <button class="chip" id="btnCountry" title="更改国家或地区">🌍 <span id="countryLabel">全球</span></button>
-      <button class="chip" id="btnFav">★ 收藏 <span id="favCount">0</span></button>
-      <button class="chip" id="btnRandom">🎲 随机一件</button>
-    </div>
-  </header>
+      <div class="head-right">地区：<button id="btnCountry" type="button"><span id="countryLabel">全球</span></button></div>
+    </header>
 
-  <main>
+    <nav class="tabs">
+      <button class="tab on" id="btnAll" type="button">全部展区</button>
+      <button class="tab" id="btnFav" type="button">我的收藏 <span id="favCount">0</span></button>
+      <button class="tab" id="btnRandom" type="button">随机一条</button>
+    </nav>
+
     <div class="tools">
-      <input id="search" type="search" placeholder="搜索站名、简介、标签…（例如：地图、开源、音乐）" autocomplete="off" spellcheck="false">
+      <input id="search" type="search" placeholder="搜索站名、简介、标签……（例如：地图、开源、爵士）" autocomplete="off" spellcheck="false">
     </div>
 
-    <div class="cats" id="cats"></div>
+    <div class="catlinks" id="cats"></div>
     <p class="count" id="count"></p>
 
     <div id="content"></div>
-  </main>
+  </div>
 
   <footer>
-    <div class="foot-inner">
+    <div class="wrap">
       <p>
         数字博物馆 · <a href="https://m.shit.pub">m.shit.pub</a> —— 收录全球有价值的网站，免费公开，不设广告，不追踪。
         本站只做收录与介绍，<b>不构成任何投资建议</b>；加密货币相关站点在许多国家和地区受到严格限制，请自行确认所在地法规。
       </p>
       <p>
         站点均在各自域名下运行，内容与版权归原作者所有。若你是站长并希望移除收录，欢迎来信。
-        <button class="link" id="btnReset">重新选择国家或地区</button>
+        <button class="link" id="btnReset" type="button">重新选择国家或地区</button>
       </p>
       <p id="footStamp"></p>
     </div>
