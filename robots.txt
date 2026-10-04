@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://m.shit.pub/sitemap.xml

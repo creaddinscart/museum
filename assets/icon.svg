@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">数字博物馆</title>
+  <rect width="64" height="64" rx="12" fill="#16202c"/>
+
+  <!-- 台阶 -->
+  <rect x="6" y="52" width="52" height="4" rx="1" fill="#8a6d3b"/>
+  <rect x="9" y="47" width="46" height="5" rx="1" fill="#c9a45c"/>
+
+  <!-- 五根立柱 -->
+  <g fill="#f2e6cd">
+    <rect x="10" y="28" width="4" height="19"/>
+    <rect x="20" y="28" width="4" height="19"/>
+    <rect x="30" y="28" width="4" height="19"/>
+    <rect x="40" y="28" width="4" height="19"/>
+    <rect x="50" y="28" width="4" height="19"/>
+  </g>
+
+  <!-- 柱顶横梁 -->
+  <rect x="8" y="23" width="48" height="5" rx="1" fill="#e0cfa8"/>
+
+  <!-- 山花 -->
+  <polygon points="32,9 57,23 7,23" fill="#f2e6cd"/>
+
+  <!-- 山花中央的像素方块：数字的意味 -->
+  <g fill="#c9a45c">
+    <rect x="28.5" y="14.5" width="3" height="3"/>
+    <rect x="32.5" y="14.5" width="3" height="3"/>
+    <rect x="28.5" y="18.5" width="3" height="3"/>
+    <rect x="32.5" y="18.5" width="3" height="3"/>
+  </g>
+</svg>
