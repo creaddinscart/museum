@@ -89,6 +89,7 @@ const NAV = [
   { key: 'home', file: 'index.html', label: 'home' },
   { key: 'categories', file: 'categories.html', label: 'about the collection' },
   { key: 'sites', file: 'sites.html', label: 'the collection' },
+  { key: 'shop', file: 'shop.html', label: 'shop' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
   { key: 'links', file: 'links.html', label: 'links' },
@@ -198,10 +199,13 @@ built.push(write('index.html', page({
     '<a href="sites.html">&gt; details / links &lt;</a></font></td>\n' +
     '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<table class="welcome" width="720" cellpadding="0" cellspacing="0" border="0">\n<tr>\n' +
-    '<td width="55%" valign="top"><p><b>Welcome to the museum. Comments and questions are appreciated.</b><br>\n' +
-    '<i><font color="#c00000">The museum does not have a shop. Mails regarding quotations, orders and delivery times remain unanswered !</font></i></p></td>\n' +
-    '<td width="45%" valign="top" align="right"><p><font size="2"><a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
-    'For safety reasons green mail address<br>is a non clickable image.</font></p></td>\n' +
+    '<td width="55%" valign="top"><p><b>Welcome to the museum. Comments, questions and orders are appreciated.</b><br>\n' +
+    '<i><font color="#c00000">The museum has a shop. Mails regarding quotations, orders and\n' +
+    'delivery times are welcome and answered !</font></i></p></td>\n' +
+    '<td width="45%" valign="top" align="right"><p><font size="2">\n' +
+    '<a href="mailto:mail@shit.pub?subject=Order%20enquiry">mail@shit.pub</a><br>\n' +
+    'Orders, quotations and delivery times by mail.<br>\n' +
+    'A reply usually follows within a few days.</font></p></td>\n' +
     '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<p align="center"><b><font color="#c00000">Collection at a glance</font></b></p>\n\n' +
     '<div class="message" align="center">\n<font size="2">\n' +
@@ -334,9 +338,30 @@ built.push(write('about.html', page({
     'since 2009. Favour goes to sites that do one thing properly, stay online, and load\n' +
     'quickly.<br><br>\n' +
     'No advertising runs here, no cookies are set and nobody is tracked.<br>\n' +
-    'There is no shop and there never will be.<br><br>\n' +
-    'Contact: <a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
-    'Suggestions and corrections are always welcome; purchase enquiries are not.\n' +
+    'The museum keeps a small shop, run entirely by mail.<br><br>\n' +
+    'Contact: <a href="mailto:mail@shit.pub?subject=Shop%20enquiry">mail@shit.pub</a><br>\n' +
+    'Suggestions, corrections and order enquiries are all welcome.\n' +
+    '</font>\n</div>\n'
+})));
+
+/* ----------------------------------------------------------------- shop */
+built.push(write('shop.html', page({
+  key: 'shop',
+  file: 'shop.html',
+  prefix: '',
+  title: 'Shop - ' + TOTAL_TITLE,
+  description: 'The museum shop: quotations, orders and delivery times, all handled by mail.',
+  body:
+    '<h2>The shop</h2>\n\n' +
+    '<p class="lead" align="center"><font size="2">A small shop, kept alongside the collection and run by mail.</font></p>\n\n' +
+    '<div class="message">\n<font size="2">\n' +
+    'Write to <a href="mailto:mail@shit.pub?subject=Order%20enquiry">mail@shit.pub</a>\n' +
+    'saying what you are after;<br>\na quotation is sent back with the price, the shipping\n' +
+    'cost and the delivery time.<br><br>\n' +
+    'Nothing is charged before you agree to the quotation.<br>\n' +
+    'Orders confirmed by mail are dispatched once payment is received.<br><br>\n' +
+    'For anything already listed in the <a href="sites.html">collection</a>,\n' +
+    'quote the name and we take it from there.\n' +
     '</font>\n</div>\n'
 })));
 
@@ -379,7 +404,7 @@ built.push(write('sitemap.html', page({
 
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
-  var urls = ['', 'categories.html', 'sites.html', 'acknowledgments.html',
+  var urls = ['', 'categories.html', 'sites.html', 'shop.html', 'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
     CATS.map(function (c) { return 'categories/' + c + '.html'; }));
 
