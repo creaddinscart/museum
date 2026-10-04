@@ -15,11 +15,21 @@
 - `script.js` 仅做渐进增强（sites.html 实时筛选，`/` 聚焦、Esc 清空）。
 - `sitemap.xml` 由 build.js 生成，勿手改。
 
+## 访客提交机制
+
+- 站点跑在 GitHub Pages（纯静态、无后端），所以访客提交**存 localStorage
+  （`museum.guests.v1`），只对提交者自己可见**，界面已如实说明。
+- 访客条目一律**置顶 + 红色 `visitor submission` 标记 + 未验证告示**，
+  与已审收藏绝对分区（红框容器），由 `script.js` 的 `renderGuests()` 负责。
+- 想让别人也看到 → 必须接后端（Formspree / 云托管 DB），需要用户自己提供 key 或服务。
+
 ## 业务口径（重要）
 
-- **博物馆有 shop**：首页欢迎语与 about 页均改为欢迎"报价 / 下单 / 交期"邮件，
-  不再写 "The museum does not have a shop"。新增 `shop.html`（邮件询价下单流程），
-  顶层页共 8 个。改动 ICU 文案请同步 `build.js`，不要只改生成结果。
+- ~~shop~~ **已下线**（2026-10-04 用户要求撤销）。替代品是 `exhibition.html`，
+  nav 标签为**中文「展厅」**（用户明确指定，勿改回英文）。
+- 邮箱下方固定中文提示："如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。"
+  （index 欢迎区 / about 页 Contact / exhibition 页底部三处，写在 build.js 里。）
+- 站点其余文案仍为英文复古风格，中英混排是刻意的。
 - 旧版中文「数字博物馆」（703 站、21 展区、assets/ + tools/ 结构）**已废弃**，
   仅存在于 git 历史（tag 无，提交 bac6322 及之前）。
 

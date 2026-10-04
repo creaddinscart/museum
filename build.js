@@ -6,6 +6,7 @@ const path = require('path');
 
 const ROOT = __dirname;
 const SITE = 'https://m.shit.pub/';
+const REPO = 'creaddinscart/museum';
 const TOTAL_TITLE = 'Digital Museum of Professional Websites';
 
 const window = {};
@@ -85,11 +86,20 @@ function note(cat) {
   return ROOM_NOTE[cat] || ('Everything filed under ' + cat + '.');
 }
 
+/* visitor submitted entries are rendered client side into these boxes, always at
+   the top of a room so the "not verified" warning is the first thing seen */
+function guestBox(what) {
+  return '<div class="guestbox" data-guest="' + what + '"></div>';
+}
+
+const GUEST_ALL = guestBox('all');
+
 const NAV = [
   { key: 'home', file: 'index.html', label: 'home' },
   { key: 'categories', file: 'categories.html', label: 'about the collection' },
   { key: 'sites', file: 'sites.html', label: 'the collection' },
-  { key: 'shop', file: 'shop.html', label: 'shop' },
+  { key: 'submit', file: 'submit.html', label: 'submit a site' },
+  { key: 'exhibition', file: 'exhibition.html', label: '展厅' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
   { key: 'links', file: 'links.html', label: 'links' },
@@ -166,8 +176,7 @@ function entryHtml(s, showRoom) {
 }
 
 function write(file, contents) {
-  var dest = path.join(ROOT, file);
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  var dest = path.join(ROOT, file);  fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, contents);
   return file;
 }
@@ -199,13 +208,13 @@ built.push(write('index.html', page({
     '<a href="sites.html">&gt; details / links &lt;</a></font></td>\n' +
     '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<table class="welcome" width="720" cellpadding="0" cellspacing="0" border="0">\n<tr>\n' +
-    '<td width="55%" valign="top"><p><b>Welcome to the museum. Comments, questions and orders are appreciated.</b><br>\n' +
-    '<i><font color="#c00000">The museum has a shop. Mails regarding quotations, orders and\n' +
-    'delivery times are welcome and answered !</font></i></p></td>\n' +
+    '<td width="55%" valign="top"><p><b>Welcome to the museum. Comments, questions and suggestions are appreciated.</b><br>\n' +
+    '<i><font color="#c00000">The museum keeps an exhibition hall. Suggestions of new\n' +
+    'rooms and new pieces are always welcome !</font></i></p></td>\n' +
     '<td width="45%" valign="top" align="right"><p><font size="2">\n' +
-    '<a href="mailto:mail@shit.pub?subject=Order%20enquiry">mail@shit.pub</a><br>\n' +
-    'Orders, quotations and delivery times by mail.<br>\n' +
-    'A reply usually follows within a few days.</font></p></td>\n' +
+    '<a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
+    '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+    '邮件通常会在几天内回复。</font></p></td>\n' +
     '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<p align="center"><b><font color="#c00000">Collection at a glance</font></b></p>\n\n' +
     '<div class="message" align="center">\n<font size="2">\n' +
@@ -263,6 +272,7 @@ built.push(write('index.html', page({
       '<h2>Sites</h2>\n\n' +
       '<p class="lead" align="center"><font size="2">Total: <b>' + SITES.length +
       '</b> real sites, all verified and clickable.</font></p>\n\n' +
+      GUEST_ALL + '\n\n' +
       '<div class="filterbox" align="center">\n' +
       '<font size="2"><label for="filter">filter this page</label>\n' +
       '<input id="filter" type="search" size="28" autocomplete="off" spellcheck="false">\n' +
@@ -299,6 +309,7 @@ CATS.forEach(function (c) {
       '<p class="lead" align="center"><font size="2">' + esc(note(c)) + '<br>' +
       rooms[c].length + ' site' + (rooms[c].length === 1 ? '' : 's') + ' in this room.</font></p>\n\n' +
       pager + '\n' +
+      guestBox(c) + '\n\n' +
       '<ul class="entrylist">\n' + rooms[c].map(function (s) {
         return entryHtml(s, false);
       }).join('\n') + '\n</ul>\n\n' + pager
@@ -338,32 +349,122 @@ built.push(write('about.html', page({
     'since 2009. Favour goes to sites that do one thing properly, stay online, and load\n' +
     'quickly.<br><br>\n' +
     'No advertising runs here, no cookies are set and nobody is tracked.<br>\n' +
-    'The museum keeps a small shop, run entirely by mail.<br><br>\n' +
-    'Contact: <a href="mailto:mail@shit.pub?subject=Shop%20enquiry">mail@shit.pub</a><br>\n' +
-    'Suggestions, corrections and order enquiries are all welcome.\n' +
+    'Alongside the collection there is an\n' +
+    '<a href="exhibition.html">exhibition hall</a>, rearranged from time to time.<br><br>\n' +
+    'Contact: <a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
+    '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+    'Questions, corrections and bulk submissions are all welcome.\n' +
     '</font>\n</div>\n'
 })));
 
 /* ----------------------------------------------------------------- shop */
-built.push(write('shop.html', page({
-  key: 'shop',
-  file: 'shop.html',
-  prefix: '',
-  title: 'Shop - ' + TOTAL_TITLE,
-  description: 'The museum shop: quotations, orders and delivery times, all handled by mail.',
-  body:
-    '<h2>The shop</h2>\n\n' +
-    '<p class="lead" align="center"><font size="2">A small shop, kept alongside the collection and run by mail.</font></p>\n\n' +
-    '<div class="message">\n<font size="2">\n' +
-    'Write to <a href="mailto:mail@shit.pub?subject=Order%20enquiry">mail@shit.pub</a>\n' +
-    'saying what you are after;<br>\na quotation is sent back with the price, the shipping\n' +
-    'cost and the delivery time.<br><br>\n' +
-    'Nothing is charged before you agree to the quotation.<br>\n' +
-    'Orders confirmed by mail are dispatched once payment is received.<br><br>\n' +
-    'For anything already listed in the <a href="sites.html">collection</a>,\n' +
-    'quote the name and we take it from there.\n' +
-    '</font>\n</div>\n'
-})));
+/* --------------------------------------------------------------- submit */
+(function () {
+  var options = CATS.map(function (c) {
+    return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+  }).join('\n');
+
+  built.push(write('submit.html', page({
+    key: 'submit',
+    file: 'submit.html',
+    prefix: '',
+    title: 'Submit a site - ' + TOTAL_TITLE,
+    description: 'Suggest a website for the museum: give the address, pick a room and write a short description.',
+    body:
+      '<h2>Submit a site</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">Suggest something worth having.\n' +
+      'Submissions are marked <b>visitor submission</b> until the collector checks them.</font></p>\n\n' +
+      '<form class="submitform" id="submitForm" method="post" action="#">\n' +
+      '<table class="formtable" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
+      '<tr><td width="120" align="right" valign="top"><font size="2">address</font></td>\n' +
+      '<td><input id="sfUrl" type="url" size="42" maxlength="200" required\n' +
+      'placeholder="https://example.com" spellcheck="false"></td></tr>\n' +
+      '<tr><td align="right" valign="top"><font size="2">name</font></td>\n' +
+      '<td><input id="sfName" type="text" size="42" maxlength="70" required\n' +
+      'placeholder="how the site calls itself"></td></tr>\n' +
+      '<tr><td align="right" valign="top"><font size="2">room</font></td>\n' +
+      '<td><select id="sfCat">\n' + options + '\n</select></td></tr>\n' +
+      '<tr><td align="right" valign="top"><font size="2">description</font></td>\n' +
+      '<td><textarea id="sfDesc" rows="3" cols="44" maxlength="240" required\n' +
+      'placeholder="one plain sentence on what it is for"></textarea></td></tr>\n' +
+      '<tr class="trap"><td align="right"><font size="2">leave empty</font></td>\n' +
+      '<td><input id="sfTrap" type="text" size="42" tabindex="-1" autocomplete="off"></td></tr>\n' +
+      '<tr><td>&nbsp;</td><td><font size="2"><label>\n' +
+      '<input id="sfConfirm" type="checkbox"> I confirm this site exists and that I\n' +
+      'have no hand in it being listed.</label></font></td></tr>\n' +
+      '<tr><td>&nbsp;</td><td><button type="submit">submit</button>\n' +
+      '<span id="sfStatus" class="tally"></span></td></tr>\n' +
+      '</table>\n</form>\n\n' +
+      '<p id="sfResult" class="lead" align="center"></p>\n\n' +
+      '<hr width="720">\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      'What happens next:<br>\n' +
+      'The site appears immediately on its room page and on\n' +
+      '<a href="submissions.html">visitor submissions</a>,<br>\n' +
+      'carrying a visible <b>visitor submission</b> mark that says it has not been\n' +
+      'verified.<br><br>\n' +
+      'To have it added to the official\n' +
+      '<a href="sites.html">collection</a>\u2014mark removed\u2014open\n' +
+      '<a id="sfGithub" href="https://github.com/' + REPO + '/issues/new?labels=visitor-submission">\n' +
+      'an issue on GitHub</a> and the collector will check the link.<br>\n' +
+      'Submissions are stored in your own browser until then.\n' +
+      '</font>\n</div>\n'
+  })));
+
+  built.push(write('submissions.html', page({
+    key: 'submit',
+    file: 'submissions.html',
+    prefix: '',
+    title: 'Visitor submissions - ' + TOTAL_TITLE,
+    description: 'Websites suggested by visitors, listed before verification.',
+    body:
+      '<h2>Visitor submissions</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">Suggested by visitors, not yet\n' +
+      'checked by the collector. Everything below carries a warning mark.</font></p>\n\n' +
+      GUEST_ALL + '\n\n' +
+      '<p class="lead" align="center"><font size="2">Nothing here yet?\n' +
+      '<a href="submit.html">Submit a site</a>.</font></p>\n'
+  })));
+})();
+
+/* ----------------------------------------------------------- exhibition hall */
+(function () {
+  var HANGS = [
+    'The Met', 'Louvre', 'British Museum', 'Internet Archive', 'Library of Congress',
+    'NASA', 'CERN', 'Nature', 'arXiv', 'GitHub', 'MDN Web Docs', 'Wikipedia',
+    'Mayo Clinic', 'PubMed', 'Google Arts & Culture', 'Europeana'
+  ];
+
+  var index = {};
+  SITES.forEach(function (s) { index[s.name] = s; });
+
+  var pieces = HANGS.filter(function (n) { return index[n]; }).map(function (n) {
+    return index[n];
+  });
+
+  built.push(write('exhibition.html', page({
+    key: 'exhibition',
+    file: 'exhibition.html',
+    prefix: '',
+    title: 'Exhibition hall (展厅) - ' + TOTAL_TITLE,
+    description: 'A changing selection hung out of storage: ' + pieces.length +
+      ' highlights from the collection.',
+    body:
+      '<h2>展厅 / Exhibition hall</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">A few pieces hung out of\n' +
+      'storage for the moment. ' + pieces.length + ' exhibits, changed from time to\n' +
+      'time.<br>Everything here also sits in the\n' +
+      '<a href="sites.html">complete directory</a>.</font></p>\n\n' +
+      '<ul class="entrylist">\n' + pieces.map(function (s) {
+        return entryHtml(s, true);
+      }).join('\n') + '\n</ul>\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+      '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
+      '<a href="submit.html">submit a site</a>\n' +
+      '</font>\n</div>\n'
+  })));
+})();
 
 built.push(write('links.html', page({
   key: 'links',
@@ -404,7 +505,8 @@ built.push(write('sitemap.html', page({
 
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
-  var urls = ['', 'categories.html', 'sites.html', 'shop.html', 'acknowledgments.html',
+  var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'submit.html',
+    'submissions.html', 'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
     CATS.map(function (c) { return 'categories/' + c + '.html'; }));
 
