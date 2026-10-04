@@ -1,101 +1,136 @@
 # 数字博物馆 · m.shit.pub
 
-收藏全球几百个真正有价值的网站，按展区陈列，免费公开。
+收藏全球 703 个真正有价值的网站，分 21 个展区陈列，免费公开。
 
 - 线上地址：<https://m.shit.pub>
 - 托管：GitHub Pages（仓库根目录发布）
+
+## 页面长什么样
+
+打开页面正中是一个圆环：圆心是博物馆，21 个展区围成一圈。点任意展区，
+下方列出该展区的网站。顶部一行是搜索框。
+
+- **搜索**：站名、简介、标签、域名一起搜，按相关度排序，命中的字会高亮。
+  支持多关键词（空格分隔，全部命中才算），结果里给出总数。按 `/` 聚焦搜索框，
+  按 `Esc` 清空。
+- **国家 / 地区**：首次进入必须选择所在地。存在浏览器 `localStorage`，
+  也可以直接用 `?c=CN` 这样的链接指定。
+- **深链**：`?view=games` 打开某个展区，`?q=开源` 直接带搜索词进站，三者可以组合。
+- **收藏**：点条目右侧的 ☆，存在自己的浏览器里。
+
+## 加密货币展区怎么受限
+
+名单在 `assets/js/data-base.js`：
+
+- `CRYPTO_BLOCKED`（中国、阿富汗、阿尔及利亚、孟加拉国、玻利维亚、埃及、伊拉克、
+  摩洛哥、尼泊尔、北马其顿、卡塔尔、突尼斯、瓦努阿图、伊朗、科威特、巴林、沙特、
+  约旦、黎巴嫩、阿曼、巴基斯坦、叙利亚、也门）—— 整个展区不展示，并给出说明。
+- `CRYPTO_WARN`（土耳其、尼日利亚、印尼、印度、俄罗斯、越南）—— 照常展示，
+  但顶部提示当地法规风险。
+
+## 搜索引擎能不能收录
+
+能。`index.html` 里带了：
+
+- 语义化标签（`header` / `nav` / `main` / `section` / `footer`）与唯一的 `h1`
+- `title`、`description`、`canonical`、Open Graph
+- 两段 JSON-LD：`WebSite`（带 `SearchAction`）与 `CollectionPage` + `ItemList`（21 个展区）
+- `<noscript>` 里一份完整静态目录，**703 个站点的链接全部是真链接**，
+  不执行 JS 的爬虫也能抓到
+
+`sitemap.xml` 列出首页 + 21 个展区的 `?view=` 地址。`robots.txt` 指向它。
 
 ## 目录结构
 
 ```
 .
-├── CNAME                     # 自定义域名 m.shit.pub
-├── .nojekyll                 # 关闭 Jekyll，保证 assets/ 等目录原样发布
-├── index.html                # 唯一入口：国家选择 + 博物馆
+├── CNAME                     # m.shit.pub
+├── .nojekyll                 # 关掉 Jekyll，保证 assets/ 原样发布
+├── index.html                # 唯一入口：国家选择 + 博物馆（含 noscript 目录）
 ├── robots.txt
-├── sitemap.xml
-├── tools/                    # 维护脚本，不参与页面运行
+├── sitemap.xml               # 由 tools/build_seo.py 生成
+├── tools/
 │   ├── validate-data.py
 │   ├── check-links.py
 │   ├── dedupe.py
+│   ├── build_seo.py
 │   └── smoke-test.js
 └── assets/
     ├── icon.svg              # 2D 博物馆图标（自绘）
     ├── favicon.svg           # 标签页图标（自绘）
     ├── css/style.css
     └── js/
-        ├── data-base.js      # 国家/地区列表、加密货币受限名单
-        ├── data-01-culture.js   # 博物馆与文化遗产 / 阅读与文献 / 学习与教育 / 科学与研究
-        ├── data-02-games.js     # 游戏 / 影视与动画 / 音乐与声音 / 图片与视觉
-        ├── data-03-dev.js       # 编程与开发 / 人工智能 / 工具与效率 / 数据与开放数据
-        ├── data-04-money.js     # 金融与经济 / 加密货币与区块链 / 新闻与信息 / 政府与公共资源
-        ├── data-05-life.js      # 公益与社会 / 健康与生活 / 搜索与导航 / 冷门与趣味 / 航天与探索
+        ├── data-base.js      # 国家列表、加密货币受限名单
+        ├── data-01-culture.js   # 文博 / 文献 / 教育 / 科学
+        ├── data-02-games.js     # 游戏 / 影视 / 音乐 / 图像
+        ├── data-03-dev.js       # 开发 / 智能 / 工具 / 数据
+        ├── data-04-money.js     # 金融 / 加密 / 新闻 / 政务
+        ├── data-05-life.js      # 公益 / 健康 / 搜索 / 趣味 / 航天
         └── app.js
 ```
 
-当前收录 **21 个展区、703 件展品**。
+## 代码约定
 
-## 设计说明
-
-- **纯静态**：原生 HTML/CSS/JS，无框架、无构建、无依赖、无外部请求，也不做任何埋点。
-- **维基风格**：白底、蓝链（含 `:visited` 变紫）、衬线标题配灰色下划线、分类盒、
-  提示框（ambox）、外链小箭头。没有圆角、阴影、渐变或深色模式。
-- **简陋**：一套样式表，一个页面，所有数据都在 JS 文件里。
-- **国家/地区选择**：首次进入必须选择所在地，结果存在浏览器 `localStorage`，也可用 `?c=CN` 直接指定。
-- **加密货币展区**：
-  - `CRYPTO_BLOCKED`（中国、阿富汗、阿尔及利亚、孟加拉国、玻利维亚、埃及、伊拉克、摩洛哥、尼泊尔、北马其顿、卡塔尔、突尼斯、瓦努阿图、伊朗、科威特、巴林、沙特、约旦、黎巴嫩、阿曼、巴基斯坦、叙利亚、也门）——整个展区不展示。
-  - `CRYPTO_WARN`（土耳其、尼日利亚、印尼、印度、俄罗斯、越南）——照常展示，但顶部提示当地法规风险。
-  - 名单在 `assets/js/data-base.js`，可自行增删。
+- 所有代码、注释、变量名、工具输出一律英文；**代码里不写注释**。
+  页面上面向读者的中文只出现在数据和 HTML 文案里。
+- 纯静态：原生 HTML/CSS/JS，无框架、无构建步骤、无依赖、无外部请求、无埋点。
+- 样式是维基风格：白底、蓝链（访问过变紫）、衬线标题配灰色下划线、
+  外链小箭头。没有圆角、阴影、渐变、深色模式。
 
 ## 新增一个展区
 
-1. 在 `assets/js/data-0X-*.js` 里 `MUSEUM_CATEGORIES.push({...})`：
+在 `assets/js/data-0X-*.js` 里追加：
 
 ```js
 MUSEUM_CATEGORIES.push({
-  id: "heritage",              // 唯一 id
+  id: "heritage",
+  short: "文博",
   name: "博物馆与文化遗产",
   note: "一句话说明这个展区收录什么",
-  restricted: false,           // 可选：true 表示受地区限制
+  restricted: false,
   sites: [
-    // [中文名称, URL, 中文简介, 国家或地区, 语言, 标签数组]
     ["卢浮宫", "https://www.louvre.fr", "巴黎卢浮宫官网，可在线浏览约 48 万件馆藏。", "法国", "fr", ["艺术", "馆藏"]],
   ]
 });
 ```
 
-2. 如果是新文件，在 `index.html` 底部的 `<script>` 列表里加上它（放在 `app.js` 之前）。
+`short` 是环形导航上的 2 字简称，21 个展区各用一个，不能重复 ——
+圆环一圈要排得下，长名字会互相压住，校验脚本会盯着这一点。
 
-## 本地预览
-
-```sh
-python3 -m http.server 8000
-# 打开 http://localhost:8000
-```
+新增文件记得加进 `index.html` 底部的 `<script>` 列表（放在 `app.js` 之前）。
 
 ## 维护工具
 
-三个脚本，都只用 Python 3 标准库，不需要装任何依赖。
+都只用 Python 3 标准库，不需要装依赖。在仓库根目录运行：
 
 ```sh
-python3 tools/validate-data.py    # 数据格式：括号配平、6 元组、链接、展区间去重
-python3 tools/check-links.py      # 链接体检
-python3 tools/check-links.py 02   # 只体检某个文件（这里只看 data-02-games.js）
-python3 tools/dedupe.py --dry     # 跨展区去重（先看会删什么）
+python3 tools/validate-data.py     # 数据格式、字段、6 元组、链接、展区间去重
+python3 tools/check-links.py       # 链接体检（curl，并发 + 串行复检）
+python3 tools/check-links.py 02    # 只体检 data-02-games.js
+python3 tools/dedupe.py --dry      # 跨展区去重，先看会删什么
+python3 tools/build_seo.py         # 重新生成 noscript 目录、JSON-LD、sitemap.xml
 ```
 
-`dedupe.py` 顶部的 `RULES` 是「某个网址归哪个展区」的归属表，新增展区撞车时，
-往表里加一行、跑一次即可。
+`dedupe.py` 顶部的 `RULES` 是「某个网址归哪个展区」的归属表，
+新增展区撞车时往表里加一行、跑一次即可。
 
-冒烟测试用 macOS 自带的 JavaScriptCore 执行真实的 `app.js`（在仓库根目录运行）：
+改完数据后记得跑 `build_seo.py`，否则页面底部的静态目录还是旧的。
+
+冒烟测试用 macOS 自带的 JavaScriptCore 执行真实的 `app.js`
+（带一套 DOM 桩，会模拟选地区、点圆环、输入搜索、收藏）：
 
 ```sh
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc \
     tools/smoke-test.js
 ```
 
-它会加载全部数据与脚本，检查展区数量、字段完整性、跨展区重复，
-并模拟「入场选国家 → 加密货币展区按地区隐藏 / 显示」的完整流程。
+它还会算一遍圆环的几何：节点间距必须大于标签宽度，桌面和手机两种尺寸都验。
+
+## 本地预览
+
+```sh
+python3 -m http.server 8000
+```
 
 ## 部署
 
@@ -110,4 +145,5 @@ m.shit.pub.  CNAME  <你的用户名>.github.io.
 
 ## 免责声明
 
-本站只做收录与介绍，不构成任何投资建议。所有站点运行在各自域名下，内容与版权归原作者所有。
+本站只做收录与介绍，不构成任何投资建议。所有站点运行在各自域名下，
+内容与版权归原作者所有。

@@ -1,6 +1,6 @@
-// 数字博物馆 · 展区数据 03
 MUSEUM_CATEGORIES.push({
   id: "dev",
+  short: "开发",
   name: "编程与开发",
   note: "文档、代码托管、开源社区与学习平台，程序员常用资源集合。",
   sites: [
@@ -70,6 +70,7 @@ MUSEUM_CATEGORIES.push({
 });
 MUSEUM_CATEGORIES.push({
   id: "ai",
+  short: "智能",
   name: "人工智能",
   note: "大模型、研究机构、开源模型与 AI 伦理，追踪人工智能进展。",
   sites: [
@@ -109,6 +110,7 @@ MUSEUM_CATEGORIES.push({
 });
 MUSEUM_CATEGORIES.push({
   id: "tools",
+  short: "工具",
   name: "工具与效率",
   note: "在线转换、笔记、看板与安全工具，提升日常工作效率。",
   sites: [
@@ -157,6 +159,7 @@ MUSEUM_CATEGORIES.push({
 });
 MUSEUM_CATEGORIES.push({
   id: "opendata",
+  short: "数据",
   name: "数据与开放数据",
   note: "政府开放数据、国际组织统计与可视化工具，用数据认识世界。",
   sites: [

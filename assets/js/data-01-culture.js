@@ -1,7 +1,6 @@
-// 数字博物馆 · 展区数据 01
-// 展区一：博物馆与文化遗产
 MUSEUM_CATEGORIES.push({
   id: "heritage",
+  short: "文博",
   name: "博物馆与文化遗产",
   note: "收录全球博物馆官网、数字馆藏、世界遗产与考古建筑资源",
   sites: [
@@ -47,9 +46,9 @@ MUSEUM_CATEGORIES.push({
   ]
 });
 
-// 展区二：阅读与文献
 MUSEUM_CATEGORIES.push({
   id: "reading",
+  short: "文献",
   name: "阅读与文献",
   note: "收录公共图书馆、电子书、古籍善本与开放学术文献资源",
   sites: [
@@ -83,9 +82,9 @@ MUSEUM_CATEGORIES.push({
   ]
 });
 
-// 展区三：学习与教育
 MUSEUM_CATEGORIES.push({
   id: "learning",
+  short: "教育",
   name: "学习与教育",
   note: "收录公开课、在线课程、语言学习与开放教科书平台",
   sites: [
@@ -119,9 +118,9 @@ MUSEUM_CATEGORIES.push({
   ]
 });
 
-// 展区四：科学与研究
 MUSEUM_CATEGORIES.push({
   id: "science",
+  short: "科学",
   name: "科学与研究",
   note: "收录科研机构、论文预印本、科学数据库与权威科普站点",
   sites: [

@@ -1,8 +1,5 @@
-// 数字博物馆 · 基础数据
-// 展区由 data-01 ~ data-05 分别 push 进来
 window.MUSEUM_CATEGORIES = [];
 
-// 国家 / 地区列表：代码:中文名
 window.MUSEUM_COUNTRIES_RAW = [
   "CN:中国", "HK:中国香港", "MO:中国澳门", "TW:中国台湾",
   "US:美国", "CA:加拿大", "MX:墨西哥", "BR:巴西", "AR:阿根廷", "CL:智利", "CO:哥伦比亚",
@@ -41,11 +38,9 @@ window.MUSEUM_COUNTRIES_RAW = [
   "CV:佛得角"
 ];
 
-// 加密货币：完全禁止 / 严格限制，选择这些国家或地区时不展出该展区
 window.CRYPTO_BLOCKED = [
   "CN", "AF", "DZ", "BD", "BO", "EG", "IQ", "MA", "NP", "MK", "QA", "TN", "VU",
   "IR", "KW", "BH", "SA", "JO", "LB", "OM", "PK", "SY", "YE"
 ];
 
-// 加密货币：受限或需特别注意，仍展出但显示提示
 window.CRYPTO_WARN = ["TR", "NG", "ID", "IN", "RU", "VN"];

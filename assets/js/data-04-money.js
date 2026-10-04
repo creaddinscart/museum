@@ -1,6 +1,6 @@
-// 数字博物馆 · 展区数据 04
 MUSEUM_CATEGORIES.push({
   id: "finance",
+  short: "金融",
   name: "金融与经济",
   note: "官方经济数据、市场行情、财经媒体与个人理财计算工具。",
   sites: [
@@ -45,6 +45,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "crypto",
+  short: "加密",
   name: "加密货币与区块链",
   note: "交易所、行情数据、区块浏览器与开发教育资源，仅供了解与研究。",
   restricted: true,
@@ -97,6 +98,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "news",
+  short: "新闻",
   name: "新闻与信息",
   note: "公共广播、通讯社、独立媒体与事实核查机构官方网站。",
   sites: [
@@ -136,6 +138,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "gov",
+  short: "政务",
   name: "政府与公共资源",
   note: "各国政府门户、法律法规、统计机构与国际组织官网。",
   sites: [

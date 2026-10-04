@@ -1,6 +1,6 @@
-// 数字博物馆 · 展区数据 05
 MUSEUM_CATEGORIES.push({
   id: "public",
+  short: "公益",
   name: "公益与社会",
   note: "收录公益、人权、环保、开放知识与无障碍领域的组织与平台。",
   sites: [
@@ -38,6 +38,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "life",
+  short: "健康",
   name: "健康与生活",
   note: "收录权威医疗信息、心理健康、运动营养与急救戒烟资源。",
   sites: [
@@ -73,6 +74,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "search",
+  short: "搜索",
   name: "搜索与导航",
   note: "收录搜索引擎、学术检索、隐私搜索与网页存档工具。",
   sites: [
@@ -104,6 +106,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "fun",
+  short: "趣味",
   name: "冷门与趣味",
   note: "收录无聊网站、奇趣工具、可视化玩具与复古互联网。",
   sites: [
@@ -148,6 +151,7 @@ MUSEUM_CATEGORIES.push({
 
 MUSEUM_CATEGORIES.push({
   id: "space",
+  short: "航天",
   name: "航天与探索",
   note: "收录航天机构、实时天文数据、发射直播与深空影像。",
   sites: [

@@ -1,15 +1,4 @@
 #!/usr/bin/env python3
-"""数字博物馆 · 数据校验
-
-用法：
-    python3 tools/validate-data.py
-
-检查 assets/js/data-*.js：
-  · 括号 / 引号是否配平
-  · 每个展区是否有 id / name / icon / sites
-  · 每条展品是否为 6 元组 [名称, https链接, 简介, 地区, 语言, 标签数组]
-  · id 是否重复、URL 是否重复、描述长度是否合理
-"""
 
 import os
 import re
@@ -19,11 +8,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT, "assets", "js")
 
 PAIRS = {")": "(", "]": "[", "}": "{"}
+REQUIRED_FIELDS = ("id", "name", "short", "note")
 
 
 def strip_comments(text):
-    """去掉 // 与 /* */ 注释，但保留换行以便行号仍然准确。
-    字符串里的 // （例如 https://）不会被误伤。"""
     out, i, quote = [], 0, None
     while i < len(text):
         ch = text[i]
@@ -38,11 +26,11 @@ def strip_comments(text):
         elif ch in "\"'`":
             quote = ch
             out.append(ch)
-        elif ch == "/" and text.startswith("//", i):
+        elif text.startswith("//", i):
             while i < len(text) and text[i] != "\n":
                 i += 1
             continue
-        elif ch == "/" and text.startswith("/*", i):
+        elif text.startswith("/*", i):
             i += 2
             while i + 1 < len(text) and not text.startswith("*/", i):
                 if text[i] == "\n":
@@ -57,16 +45,14 @@ def strip_comments(text):
 
 
 def split_top_level(text, sep=","):
-    """按顶层分隔符切分，跳过字符串与括号内部。"""
-    parts, buf, depth, i, quote = [], [], 0, 0, None
+    parts, buf, depth, quote, i = [], [], 0, None, 0
     while i < len(text):
         ch = text[i]
         if quote:
             buf.append(ch)
-            if ch == "\\":
-                if i + 1 < len(text):
-                    buf.append(text[i + 1])
-                    i += 1
+            if ch == "\\" and i + 1 < len(text):
+                buf.append(text[i + 1])
+                i += 1
             elif ch == quote:
                 quote = None
         elif ch in "\"'`":
@@ -91,8 +77,7 @@ def split_top_level(text, sep=","):
 
 
 def check_balance(text, where, errors):
-    stack, quote, i = [], None, 0
-    line = 1
+    stack, quote, i, line = [], None, 0, 1
     while i < len(text):
         ch = text[i]
         if ch == "\n":
@@ -108,24 +93,24 @@ def check_balance(text, where, errors):
             stack.append((ch, line))
         elif ch in ")]}":
             if not stack:
-                errors.append("%s:%d 多余的 %s" % (where, line, ch))
+                errors.append("%s:%d stray %s" % (where, line, ch))
                 return
             opener, oline = stack.pop()
             if opener != PAIRS[ch]:
-                errors.append("%s:%d %s 与第 %d 行的 %s 不匹配" % (where, line, ch, oline, opener))
+                errors.append("%s:%d %s does not match %s on line %d"
+                              % (where, line, ch, opener, oline))
                 return
         i += 1
     if stack:
-        errors.append("%s 有 %d 个括号未闭合（最后一个是第 %d 行的 %s）"
-                      % (where, len(stack), stack[-1][1], stack[-1][0]))
+        errors.append("%s has %d unclosed bracket(s), last opened on line %d"
+                      % (where, len(stack), stack[-1][1]))
     if quote:
-        errors.append("%s 有未闭合的字符串引号 %s" % (where, quote))
+        errors.append("%s has an unterminated string" % where)
 
 
-def find_blocks(text, marker="MUSEUM_CATEGORIES.push"):
-    """返回每个 push(...) 的内容（去掉外层括号）。"""
+def find_blocks(text):
     blocks = []
-    for m in re.finditer(re.escape(marker), text):
+    for m in re.finditer(r"MUSEUM_CATEGORIES\.push", text):
         start = text.find("(", m.end()) + 1
         if start == 0:
             continue
@@ -167,17 +152,14 @@ def field(block, key):
 
 
 def sites_block(block):
-    m = re.search(r'\bsites\s*:\s*\[', block)
+    m = re.search(r"\bsites\s*:\s*\[", block)
     if not m:
         return None
-    i = m.end() - 1
-    depth = 0
-    start = i
+    depth, i, start = 0, m.end() - 1, m.end() - 1
     while i < len(block):
-        ch = block[i]
-        if ch == "[":
+        if block[i] == "[":
             depth += 1
-        elif ch == "]":
+        elif block[i] == "]":
             depth -= 1
             if depth == 0:
                 return block[start + 1:i]
@@ -190,14 +172,13 @@ def strlit(x):
 
 
 def main():
-    errors, seen_ids, seen_urls = [], {}, {}
+    errors, seen_ids, seen_urls, seen_short = [], {}, {}, {}
     files = [f for f in sorted(os.listdir(DATA_DIR))
              if f.startswith("data-") and f.endswith(".js") and f != "data-base.js"]
     total_sites = total_cats = 0
 
     for name in files:
-        path = os.path.join(DATA_DIR, name)
-        with open(path, encoding="utf-8") as fh:
+        with open(os.path.join(DATA_DIR, name), encoding="utf-8") as fh:
             text = strip_comments(fh.read())
 
         where = "assets/js/" + name
@@ -205,43 +186,50 @@ def main():
 
         blocks = find_blocks(text)
         if not blocks:
-            errors.append("%s 里没有找到 MUSEUM_CATEGORIES.push({...})" % where)
+            errors.append("%s has no MUSEUM_CATEGORIES.push({...}) block" % where)
             continue
 
         for block in blocks:
-            cat_id = field(block, "id")
-            cat_name = field(block, "name")
-            note = field(block, "note")
+            values = {key: field(block, key) for key in REQUIRED_FIELDS}
+            for key, value in values.items():
+                if not value:
+                    errors.append("%s category is missing the %s field" % (where, key))
 
-            for key, val in (("id", cat_id), ("name", cat_name), ("note", note)):
-                if not val:
-                    errors.append("%s 展区缺少 %s 字段" % (where, key))
+            cat_id = values["id"]
+            cat_name = values["name"]
             if cat_id:
                 if cat_id in seen_ids:
-                    errors.append("%s 展区 id 「%s」与 %s 重复" % (where, cat_id, seen_ids[cat_id]))
+                    errors.append("%s category id %s already used in %s"
+                                  % (where, cat_id, seen_ids[cat_id]))
                 else:
                     seen_ids[cat_id] = where
+            short = values["short"]
+            if short and not (2 <= len(short) <= 3):
+                errors.append("%s short name %s should be 2-3 characters" % (where, short))
+            if short:
+                if short in seen_short:
+                    errors.append("%s short name %s already used by %s"
+                                  % (where, short, seen_short[short]))
+                else:
+                    seen_short[short] = cat_id or where
 
             raw = sites_block(block)
             if raw is None:
-                errors.append("%s 展区「%s」缺少 sites 数组" % (where, cat_name))
+                errors.append("%s category %s has no sites array" % (where, cat_name))
                 continue
 
             entries = [e for e in split_top_level(raw) if e.strip()]
             total_cats += 1
             total_sites += len(entries)
-            bad_len = 0
 
             for idx, entry in enumerate(entries, 1):
                 if not entry.startswith("["):
-                    errors.append("%s 展区「%s」第 %d 条目不是数组：%s"
-                                  % (where, cat_name, idx, entry[:50]))
+                    errors.append("%s %s item %d is not an array" % (where, cat_name, idx))
                     continue
                 fields = split_top_level(entry[1:-1])
                 if len(fields) != 6:
-                    bad_len += 1
-                    errors.append("%s 展区「%s」第 %d 条目是 %d 元组（应为 6）：%s"
-                                  % (where, cat_name, idx, len(fields), entry[:70]))
+                    errors.append("%s %s item %d has %d fields, expected 6"
+                                  % (where, cat_name, idx, len(fields)))
                     continue
 
                 sname = strlit(fields[0])
@@ -249,41 +237,39 @@ def main():
                 desc = strlit(fields[2])
                 region = strlit(fields[3])
                 lang = strlit(fields[4])
-                tags_raw = fields[5]
+                tags = fields[5]
 
                 if not sname:
-                    errors.append("%s「%s」第 %d 条目缺少名称" % (where, cat_name, idx))
+                    errors.append("%s %s item %d has no name" % (where, cat_name, idx))
                 if not url or not url.startswith("https://"):
-                    errors.append("%s「%s」第 %d 条目的链接不是 https：%s"
+                    errors.append("%s %s item %d is not an https url: %s"
                                   % (where, cat_name, idx, url))
                 elif url in seen_urls:
-                    errors.append("%s 中「%s」的链接 %s 已在 %s 出现过"
+                    errors.append("%s %s reuses %s, already listed in %s"
                                   % (where, sname, url, seen_urls[url]))
-                elif url:
-                    seen_urls[url] = "%s·%s" % (where, sname)
+                else:
+                    seen_urls[url] = "%s/%s" % (where, sname)
                 if desc and not (15 <= len(desc) <= 90):
-                    errors.append("%s「%s」简介长度 %d 字（建议 15–90）：%s"
-                                  % (where, sname, len(desc), desc[:40]))
+                    errors.append("%s %s description is %d characters"
+                                  % (where, sname, len(desc)))
                 if not region:
-                    errors.append("%s「%s」缺少地区" % (where, sname))
+                    errors.append("%s %s has no region" % (where, sname))
                 if not lang:
-                    errors.append("%s「%s」缺少语言" % (where, sname))
-                if not tags_raw.startswith("[") or not tags_raw.endswith("]"):
-                    errors.append("%s「%s」标签不是数组" % (where, sname))
+                    errors.append("%s %s has no language" % (where, sname))
+                if not tags.startswith("[") or not tags.endswith("]"):
+                    errors.append("%s %s tags are not an array" % (where, sname))
 
-            print("%-26s %-16s %3d 条  %s" % (name, cat_id, len(entries), cat_name))
-            if bad_len:
-                print("    ↳ %d 条格式不符" % bad_len)
+            print("%-24s %-12s %4d  %s" % (name, cat_id, len(entries), cat_name))
 
-    print("\n合计：%d 个展区，%d 件展品。" % (total_cats, total_sites))
+    print("\n%d categories, %d sites" % (total_cats, total_sites))
 
     if errors:
-        print("\n发现 %d 个问题：" % len(errors))
-        for e in errors:
-            print("  · " + e)
+        print("\n%d problem(s):" % len(errors))
+        for error in errors:
+            print("  - " + error)
         return 1
 
-    print("数据格式检查通过。")
+    print("data validation passed")
     return 0
 
 
