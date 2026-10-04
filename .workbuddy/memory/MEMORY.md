@@ -27,9 +27,15 @@
 
 - ~~shop~~ **已下线**（2026-10-04 用户要求撤销）。替代品是 `exhibition.html`，
   nav 标签为**中文「展厅」**（用户明确指定，勿改回英文）。
-- 邮箱下方固定中文提示："如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。"
-  （index 欢迎区 / about 页 Contact / exhibition 页底部三处，写在 build.js 里。）
-- 站点其余文案仍为英文复古风格，中英混排是刻意的。
+## 语言口径（硬性）
+
+- **站页面文案一律英文，不要出现中文**（2026-10-04 用户明确要求 "不要有中文全部英语"）。
+  包括导航标签、标题、正文、联系提示。只有站点以外的交流可以用中文。
+- 邮箱下方的联系提示现用英文：
+  "Questions, corrections and sites sent in bulk are all welcome."
+  （index 欢迎区 / about 页 Contact / exhibition 页底部 / 404 页四处，改在 build.js。）
+- 升级/改动后可自查：`node build.js` 后用 Python 正则 `[　-〿一-鿿＀-￯]` 扫全部
+  *.html + categories/*.html，命中行数应为 0。
 - 旧版中文「数字博物馆」（703 站、21 展区、assets/ + tools/ 结构）**已废弃**，
   仅存在于 git 历史（tag 无，提交 bac6322 及之前）。
 

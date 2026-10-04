@@ -99,7 +99,7 @@ const NAV = [
   { key: 'categories', file: 'categories.html', label: 'about the collection' },
   { key: 'sites', file: 'sites.html', label: 'the collection' },
   { key: 'submit', file: 'submit.html', label: 'submit a site' },
-  { key: 'exhibition', file: 'exhibition.html', label: '展厅' },
+  { key: 'exhibition', file: 'exhibition.html', label: 'exhibition' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
   { key: 'links', file: 'links.html', label: 'links' },
@@ -219,9 +219,8 @@ built.push(write('index.html', page({
     'rooms and new pieces are always welcome !</font></i></p></td>\n' +
     '<td width="45%" valign="top" align="right"><p><font size="2">\n' +
     '<a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
-    '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
-    '邮件通常会在几天内回复。</font></p></td>\n' +
-    '</tr>\n</table>\n\n<hr width="720">\n\n' +
+    'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
+    'A reply usually follows within a few days.</font></p></td>\n' +    '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<p align="center"><b><font color="#c00000">Collection at a glance</font></b></p>\n\n' +
     '<div class="message" align="center">\n<font size="2">\n' +
     SITES.length + ' real sites &middot; ' + CATS.length + ' rooms<br>\n' +
@@ -358,8 +357,7 @@ built.push(write('about.html', page({
     'Alongside the collection there is an\n' +
     '<a href="exhibition.html">exhibition hall</a>, rearranged from time to time.<br><br>\n' +
     'Contact: <a href="mailto:mail@shit.pub">mail@shit.pub</a><br>\n' +
-    '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
-    'Questions, corrections and bulk submissions are all welcome.\n' +
+    'Questions, corrections and sites sent in bulk are all welcome.\n' +
     '</font>\n</div>\n'
 })));
 
@@ -452,11 +450,11 @@ built.push(write('about.html', page({
     key: 'exhibition',
     file: 'exhibition.html',
     prefix: '',
-    title: 'Exhibition hall (展厅) - ' + TOTAL_TITLE,
+    title: 'Exhibition hall - ' + TOTAL_TITLE,
     description: 'A changing selection hung out of storage: ' + pieces.length +
       ' highlights from the collection.',
     body:
-      '<h2>展厅 / Exhibition hall</h2>\n\n' +
+      '<h2>Exhibition hall</h2>\n\n' +
       '<p class="lead" align="center"><font size="2">A few pieces hung out of\n' +
       'storage for the moment. ' + pieces.length + ' exhibits, changed from time to\n' +
       'time.<br>Everything here also sits in the\n' +
@@ -465,7 +463,7 @@ built.push(write('about.html', page({
         return entryHtml(s, true);
       }).join('\n') + '\n</ul>\n\n' +
       '<div class="message">\n<font size="2">\n' +
-      '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+      'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
       '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
       '<a href="submit.html">submit a site</a>\n' +
       '</font>\n</div>\n'
@@ -504,7 +502,7 @@ built.push(write('about.html', page({
           rooms[c].length + ')</li>';
       }).join('\n') + '\n</ul>\n\n' +
       '<div class="message">\n<font size="2">\n' +
-      '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+      'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
       '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
       '<a href="/submit.html">submit a site</a>\n' +
       '</font>\n</div>\n'
