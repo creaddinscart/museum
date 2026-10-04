@@ -142,6 +142,12 @@ function page(opts) {
     .replace('<link rel="stylesheet" href="style.css">',
       '<link rel="stylesheet" href="' + prefix + 'style.css">');
 
+  /* the 404 page must not be indexed */
+  if (opts.noindex) {
+    body = body.replace('<meta name="robots" content="index, follow">',
+      '<meta name="robots" content="noindex, follow">');
+  }
+
   if (opts.key !== 'home') {
     body += '<p class="minilogo" align="center">' +
       '<a href="' + prefix + 'index.html"><img src="' + prefix +
@@ -462,6 +468,45 @@ built.push(write('about.html', page({
       '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
       '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
       '<a href="submit.html">submit a site</a>\n' +
+      '</font>\n</div>\n'
+  })));
+})();
+
+/* ------------------------------------------------------------------- 404 */
+/* GitHub Pages serves this file for any unknown path, including deep ones like
+   /a/b/c, so every link and asset in it must be absolute. */
+(function () {
+  var busy = CATS.slice().sort(function (a, b) {
+    return rooms[b].length - rooms[a].length;
+  }).slice(0, 12);
+
+  built.push(write('404.html', page({
+    key: 'error',
+    file: '404.html',
+    prefix: '/',
+    noindex: true,
+    title: 'Room not found (404) - ' + TOTAL_TITLE,
+    description: 'The page you asked for is not part of the collection.',
+    body:
+      '<h2>404</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">\n' +
+      'This room does not exist.</font></p>\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      'The piece you asked for is not in this museum.<br>\n' +
+      'It may have been moved, renamed, or the address mistyped.<br><br>\n' +
+      'Try the <a href="/">front door</a>, the\n' +
+      '<a href="/categories.html">list of rooms</a>, or the\n' +
+      '<a href="/sites.html">complete directory</a>.\n' +
+      '</font>\n</div>\n\n' +
+      '<h3>Busiest rooms</h3>\n\n<ul class="plainlist cols">\n' +
+      busy.map(function (c) {
+        return '<li><a href="/categories/' + c + '.html">' + esc(c) + '</a> (' +
+          rooms[c].length + ')</li>';
+      }).join('\n') + '\n</ul>\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      '如果您有任何问题，或希望批量上传 / 提交网站，请联系我们。<br>\n' +
+      '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
+      '<a href="/submit.html">submit a site</a>\n' +
       '</font>\n</div>\n'
   })));
 })();
