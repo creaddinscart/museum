@@ -1,0 +1,320 @@
+body {
+font-family: "Times New Roman", Times, Georgia, serif;
+font-size: 15px;
+background: #ffffff;
+color: #000000;
+margin: 0;
+padding: 20px 10px 40px;
+text-align: center;
+}
+
+.logo {
+margin: 10px auto 0;
+}
+
+.tagline {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 26px;
+font-weight: normal;
+color: #000000;
+margin: 20px 0 30px;
+line-height: 1.3;
+}
+
+.enter {
+margin: 20px 0 30px;
+}
+
+.enter a {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 38px;
+font-weight: bold;
+color: #7b3fa0;
+text-decoration: none;
+letter-spacing: 1px;
+}
+
+.enter a:hover {
+text-decoration: underline;
+}
+
+.topnav {
+margin: 0 auto 20px;
+}
+
+.topnav td {
+font-size: 15px;
+}
+
+a {
+color: #0000ee;
+text-decoration: underline;
+}
+
+a:visited {
+color: #551a8b;
+}
+
+a:hover {
+color: #cc0000;
+}
+
+hr {
+border: 0;
+border-top: 1px solid #999999;
+margin: 20px auto;
+width: 720px;
+}
+
+h2 {
+font-family: "Times New Roman", Times, serif;
+font-size: 20px;
+font-weight: bold;
+margin: 20px 0 10px;
+}
+
+table.infobox,
+table.midnav,
+table.welcome {
+margin: 0 auto;
+}
+
+table.infobox td,
+table.midnav td {
+font-size: 14px;
+line-height: 1.5;
+padding: 4px;
+}
+
+table.midnav td {
+font-size: 15px;
+padding: 6px;
+}
+
+.small-gray {
+color: #808080;
+font-size: 13px;
+line-height: 1.5;
+margin: 12px 0;
+}
+
+table.welcome td {
+padding: 4px;
+font-size: 14px;
+line-height: 1.6;
+}
+
+table.welcome p {
+margin: 4px 0;
+}
+
+.message {
+margin: 12px auto 30px;
+}
+
+.message font {
+line-height: 1.7;
+}
+
+#categoryList {
+font-size: 14px;
+line-height: 2;
+max-width: 720px;
+margin: 0 auto 10px;
+}
+
+#museumGrid {
+font-size: 13px;
+line-height: 1.7;
+column-count: 3;
+column-gap: 24px;
+max-width: 1000px;
+margin: 10px auto 20px;
+text-align: left;
+}
+
+#museumGrid .site {
+margin: 0 0 3px 0;
+break-inside: avoid;
+}
+
+#museumGrid .site .cat {
+color: #808080;
+font-size: 12px;
+}
+
+.disclaimer {
+width: 740px;
+margin: 20px auto 0;
+border: 1px solid #000000;
+padding: 12px 16px;
+text-align: left;
+font-size: 13.5px;
+line-height: 1.55;
+background: #ffffff;
+}
+
+.disclaimer p {
+margin: 0;
+}
+
+.minilogo {
+margin: 4px auto 0;
+}
+
+.brandline {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 13px;
+letter-spacing: 1px;
+margin: 2px 0 8px;
+}
+
+.brandline a {
+color: #000000;
+text-decoration: none;
+}
+
+.brandline a:hover {
+text-decoration: underline;
+}
+
+h3 {
+font-family: "Times New Roman", Times, serif;
+font-size: 17px;
+font-weight: bold;
+margin: 18px 0 4px;
+}
+
+.lead {
+color: #333333;
+font-size: 13px;
+line-height: 1.5;
+margin: 4px 0 10px;
+}
+
+.entrylist {
+list-style: none;
+padding: 0;
+max-width: 1000px;
+margin: 0 auto 14px;
+text-align: left;
+}
+
+.entrylist > li {
+border-bottom: 1px solid #e4e4e4;
+padding: 7px 2px;
+line-height: 1.5;
+}
+
+.entrylist > li[hidden] {
+display: none;
+}
+
+.entrylist .ext {
+font-size: 15px;
+}
+
+.entrylist .host {
+color: #006621;
+font-family: "Courier New", Courier, monospace;
+font-size: 12px;
+margin-left: 8px;
+}
+
+.entrylist .snip {
+display: block;
+color: #444444;
+font-size: 13px;
+margin-top: 2px;
+}
+
+.entrylist .chip {
+display: inline-block;
+color: #808080;
+font-size: 11px;
+border: 1px solid #cccccc;
+padding: 0 4px;
+margin-left: 6px;
+}
+
+.jump {
+max-width: 1000px;
+margin: 0 auto 18px;
+text-align: left;
+line-height: 2;
+}
+
+.pager {
+margin: 6px auto 14px;
+}
+
+.pager td {
+padding: 4px;
+}
+
+.back {
+max-width: 1000px;
+margin: 6px auto 0;
+text-align: right;
+}
+
+.filterbox {
+margin: 0 auto 16px;
+}
+
+.filterbox input {
+font-family: inherit;
+font-size: 13px;
+padding: 3px 6px;
+border: 1px solid #999999;
+}
+
+.filterbox label {
+margin-right: 6px;
+}
+
+.tally {
+color: #808080;
+margin-left: 8px;
+}
+
+.plainlist {
+max-width: 720px;
+margin: 0 auto;
+text-align: left;
+line-height: 1.7;
+}
+
+.plainlist.cols {
+max-width: 1000px;
+column-count: 3;
+column-gap: 24px;
+}
+
+.foot {
+margin: 6px 0 0;
+}
+
+a.current {
+color: #000000;
+font-weight: bold;
+text-decoration: none;
+}
+
+@media (max-width: 780px) {
+hr { width: 100%; }
+table.topnav,
+table.infobox,
+table.midnav,
+table.welcome { width: 100% !important; }
+table.infobox td,
+table.welcome td { display: block; width: 100% !important; text-align: left !important; padding: 6px 0; }
+.disclaimer { width: auto; margin: 20px 10px 0; }
+.tagline { font-size: 20px; }
+.enter a { font-size: 28px; }
+#museumGrid { column-count: 1; }
+.plainlist.cols { column-count: 1; }
+.entrylist { padding: 0 6px; }
+.jump { padding: 0 6px; line-height: 1.6; }
+.topnav td { padding: 3px 4px !important; }
+}
