@@ -15,13 +15,15 @@
 - `script.js` 仅做渐进增强（sites.html 实时筛选，`/` 聚焦、Esc 清空）。
 - `sitemap.xml` 由 build.js 生成，勿手改。
 
-## 访客提交机制
+## 提交机制（2026-10-04 用户要求撤销在线表单）
 
-- 站点跑在 GitHub Pages（纯静态、无后端），所以访客提交**存 localStorage
-  （`museum.guests.v1`），只对提交者自己可见**，界面已如实说明。
-- 访客条目一律**置顶 + 红色 `visitor submission` 标记 + 未验证告示**，
-  与已审收藏绝对分区（红框容器），由 `script.js` 的 `renderGuests()` 负责。
-- 想让别人也看到 → 必须接后端（Formspree / 云托管 DB），需要用户自己提供 key 或服务。
+- **站内不设上传表单**，一律改走三个渠道，`contact.html` 上列出来：
+  - Discord `https://discord.com/invite/ZJemMBsm`
+  - QQ `https://qm.qq.com/q/4nyFIEjn04`
+  - Email `mail@shit.pub`
+  - 渠道写在 build.js 的 contact 块 `channels` 数组里。
+- 旧的 `submit.html` / `submissions.html` 与 localStorage 访客条目机制（
+  `museum.guests.v1`、`renderGuests()`）**已全部删除**，script.js 只剩筛选 + 导航高亮。
 
 ## 业务口径（重要）
 

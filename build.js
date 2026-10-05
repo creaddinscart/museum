@@ -75,6 +75,9 @@ const ROOM_NOTE = {
   community: 'Forums, feeds and newsletters where people actually gather.',
   startup: 'Launch platforms, early funding announcements and the reports thereof.',
   engineering: 'Practitioners\' journals covering robotics, energy and infrastructure.',
+  security: 'Advisories, databases of known flaws, and the tools used to test against them.',
+  jobs: 'Boards and marketplaces for hiring, contracting and finding out what people are paid.',
+  legal: 'Statutes and case law, published openly rather than behind a subscription.',
   productivity: 'Notes, boards and task lists; the paperwork of modern work.',
   enterprise: 'Software running the back office of very large organisations.',
   ecommerce: 'Marketplaces and the tooling that lets anyone sell online.',
@@ -86,8 +89,6 @@ function note(cat) {
   return ROOM_NOTE[cat] || ('Everything filed under ' + cat + '.');
 }
 
-/* visitor submitted entries are rendered client side into these boxes, always at
-   the top of a room so the "not verified" warning is the first thing seen */
 function guestBox(what) {
   return '<div class="guestbox" data-guest="' + what + '"></div>';
 }
@@ -98,7 +99,7 @@ const NAV = [
   { key: 'home', file: 'index.html', label: 'home' },
   { key: 'categories', file: 'categories.html', label: 'about the collection' },
   { key: 'sites', file: 'sites.html', label: 'the collection' },
-  { key: 'submit', file: 'submit.html', label: 'submit a site' },
+  { key: 'contact', file: 'contact.html', label: 'submit a site' },
   { key: 'exhibition', file: 'exhibition.html', label: 'exhibition' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
@@ -277,7 +278,6 @@ built.push(write('index.html', page({
       '<h2>Sites</h2>\n\n' +
       '<p class="lead" align="center"><font size="2">Total: <b>' + SITES.length +
       '</b> real sites, all verified and clickable.</font></p>\n\n' +
-      GUEST_ALL + '\n\n' +
       '<div class="filterbox" align="center">\n' +
       '<font size="2"><label for="filter">filter this page</label>\n' +
       '<input id="filter" type="search" size="28" autocomplete="off" spellcheck="false">\n' +
@@ -313,8 +313,7 @@ CATS.forEach(function (c) {
       '<h2>' + esc(c) + '</h2>\n\n' +
       '<p class="lead" align="center"><font size="2">' + esc(note(c)) + '<br>' +
       rooms[c].length + ' site' + (rooms[c].length === 1 ? '' : 's') + ' in this room.</font></p>\n\n' +
-      pager + '\n' +
-      guestBox(c) + '\n\n' +
+      pager + '\n\n' +
       '<ul class="entrylist">\n' + rooms[c].map(function (s) {
         return entryHtml(s, false);
       }).join('\n') + '\n</ul>\n\n' + pager
@@ -362,72 +361,45 @@ built.push(write('about.html', page({
 })));
 
 /* ----------------------------------------------------------------- shop */
-/* --------------------------------------------------------------- submit */
+/* --------------------------------------------------------------- contact */
+/* submissions are not taken through this site; only by discord, qq or mail */
 (function () {
-  var options = CATS.map(function (c) {
-    return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
-  }).join('\n');
+  var channels = [
+    { label: 'discord', href: 'https://discord.com/invite/ZJemMBsm',
+      text: 'discord.com/invite/ZJemMBsm', note: 'fastest way to reach the collector' },
+    { label: 'qq', href: 'https://qm.qq.com/q/4nyFIEjn04',
+      text: 'qm.qq.com/q/4nyFIEjn04', note: 'for bulk lists and larger submissions' },
+    { label: 'email', href: 'mailto:mail@shit.pub',
+      text: 'mail@shit.pub', note: 'anything else, or a single site' }
+  ];
 
-  built.push(write('submit.html', page({
-    key: 'submit',
-    file: 'submit.html',
+  built.push(write('contact.html', page({
+    key: 'contact',
+    file: 'contact.html',
     prefix: '',
     title: 'Submit a site - ' + TOTAL_TITLE,
-    description: 'Suggest a website for the museum: give the address, pick a room and write a short description.',
+    description: 'Submissions are taken by discord, qq or email only.',
     body:
       '<h2>Submit a site</h2>\n\n' +
-      '<p class="lead" align="center"><font size="2">Suggest something worth having.\n' +
-      'Submissions are marked <b>visitor submission</b> until the collector checks them.</font></p>\n\n' +
-      '<form class="submitform" id="submitForm" method="post" action="#">\n' +
+      '<p class="lead" align="center"><font size="2">There is no upload form on this\n' +
+      'site. Sites are taken by <b>discord</b>, <b>qq</b> or <b>email</b>\n' +
+      'only.</font></p>\n\n' +
       '<table class="formtable" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
-      '<tr><td width="120" align="right" valign="top"><font size="2">address</font></td>\n' +
-      '<td><input id="sfUrl" type="url" size="42" maxlength="200" required\n' +
-      'placeholder="https://example.com" spellcheck="false"></td></tr>\n' +
-      '<tr><td align="right" valign="top"><font size="2">name</font></td>\n' +
-      '<td><input id="sfName" type="text" size="42" maxlength="70" required\n' +
-      'placeholder="how the site calls itself"></td></tr>\n' +
-      '<tr><td align="right" valign="top"><font size="2">room</font></td>\n' +
-      '<td><select id="sfCat">\n' + options + '\n</select></td></tr>\n' +
-      '<tr><td align="right" valign="top"><font size="2">description</font></td>\n' +
-      '<td><textarea id="sfDesc" rows="3" cols="44" maxlength="240" required\n' +
-      'placeholder="one plain sentence on what it is for"></textarea></td></tr>\n' +
-      '<tr class="trap"><td align="right"><font size="2">leave empty</font></td>\n' +
-      '<td><input id="sfTrap" type="text" size="42" tabindex="-1" autocomplete="off"></td></tr>\n' +
-      '<tr><td>&nbsp;</td><td><font size="2"><label>\n' +
-      '<input id="sfConfirm" type="checkbox"> I confirm this site exists and that I\n' +
-      'have no hand in it being listed.</label></font></td></tr>\n' +
-      '<tr><td>&nbsp;</td><td><button type="submit">submit</button>\n' +
-      '<span id="sfStatus" class="tally"></span></td></tr>\n' +
-      '</table>\n</form>\n\n' +
-      '<p id="sfResult" class="lead" align="center"></p>\n\n' +
+      channels.map(function (ch) {
+        return '<tr><td width="110" align="right" valign="top"><font size="2">' +
+          esc(ch.label) + '</font></td>\n<td valign="top"><font size="2">' +
+          '<a href="' + esc(ch.href) + '">' + esc(ch.text) + '</a>' +
+          '<br><span class="host">' + esc(ch.note) + '</span></font></td></tr>\n';
+      }).join('') + '</table>\n\n' +
       '<hr width="720">\n\n' +
       '<div class="message">\n<font size="2">\n' +
-      'What happens next:<br>\n' +
-      'The site appears immediately on its room page and on\n' +
-      '<a href="submissions.html">visitor submissions</a>,<br>\n' +
-      'carrying a visible <b>visitor submission</b> mark that says it has not been\n' +
-      'verified.<br><br>\n' +
-      'To have it added to the official\n' +
-      '<a href="sites.html">collection</a>\u2014mark removed\u2014open\n' +
-      '<a id="sfGithub" href="https://github.com/' + REPO + '/issues/new?labels=visitor-submission">\n' +
-      'an issue on GitHub</a> and the collector will check the link.<br>\n' +
-      'Submissions are stored in your own browser until then.\n' +
+      'What to send:<br>\n' +
+      'the address, the name, the room it belongs in, and one sentence on what it\n' +
+      'is for.<br><br>\n' +
+      'Bulk lists are welcome: a plain text file, a spreadsheet or a long message\n' +
+      'all work.<br>\n' +
+      'Nothing is added before the link has been checked by hand.\n' +
       '</font>\n</div>\n'
-  })));
-
-  built.push(write('submissions.html', page({
-    key: 'submit',
-    file: 'submissions.html',
-    prefix: '',
-    title: 'Visitor submissions - ' + TOTAL_TITLE,
-    description: 'Websites suggested by visitors, listed before verification.',
-    body:
-      '<h2>Visitor submissions</h2>\n\n' +
-      '<p class="lead" align="center"><font size="2">Suggested by visitors, not yet\n' +
-      'checked by the collector. Everything below carries a warning mark.</font></p>\n\n' +
-      GUEST_ALL + '\n\n' +
-      '<p class="lead" align="center"><font size="2">Nothing here yet?\n' +
-      '<a href="submit.html">Submit a site</a>.</font></p>\n'
   })));
 })();
 
@@ -465,7 +437,7 @@ built.push(write('about.html', page({
       '<div class="message">\n<font size="2">\n' +
       'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
       '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
-      '<a href="submit.html">submit a site</a>\n' +
+      '<a href="contact.html">submit a site</a>\n' +
       '</font>\n</div>\n'
   })));
 })();
@@ -504,7 +476,7 @@ built.push(write('about.html', page({
       '<div class="message">\n<font size="2">\n' +
       'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
       '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
-      '<a href="/submit.html">submit a site</a>\n' +
+      '<a href="/contact.html">submit a site</a>\n' +
       '</font>\n</div>\n'
   })));
 })();
@@ -548,8 +520,8 @@ built.push(write('sitemap.html', page({
 
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
-  var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'submit.html',
-    'submissions.html', 'acknowledgments.html',
+  var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'contact.html',
+    'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
     CATS.map(function (c) { return 'categories/' + c + '.html'; }));
 
