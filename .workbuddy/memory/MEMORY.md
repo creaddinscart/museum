@@ -10,8 +10,12 @@
 
 - `sites.js` = 唯一真值数据源（`window.MUSEUM_SITES`，cat/name/url/desc）。
   改内容只改这个文件，然后 `node build.js` 重新生成，**不要手改 HTML**。
-- `build.js`（node）生成 51 个页面：顶层 7 页 + `categories/<cat>.html` 每展区一页。
+- `build.js`（node）生成 59 个页面：顶层 11 页 + `categories/<cat>.html` 每展区一页。
   页面全静态，禁用 JS 也能完整浏览；`ROOM_NOTE` 是各展区导读文案。
+- **第二个数据源** `relics.js`（`window.MUSEUM_RELICS`，29 件真实文物）供 `gallery.html` 用。
+  字段 name/museum/place/period/site/file/source/license/credit/note/copy；
+  `site`=博物馆官网，`source`=Commons 原图页，`copy:true`=复刻品（页面打 replica 标）。
+  图片存本地 `gallery/`（不外链，统一 960 宽）。
 - `script.js` 仅做渐进增强（sites.html 实时筛选，`/` 聚焦、Esc 清空）。
 - `sitemap.xml` 由 build.js 生成，勿手改。
 
@@ -44,6 +48,11 @@
 ## 工程注意
 
 - 仓库根目录即 GitHub Pages 发布根（CNAME = m.shit.pub，有 .nojekyll）。
+- **本沙箱里 Bash 的 `grep` 不可靠**（有匹配也返回空），查文件内容用 Grep 工具。
+- 图片处理用 macOS 自带 `sips`（无需装 Pillow）：
+  `sips -s format jpeg -s formatOptions 82 --resampleWidth 960 in --out out.jpg`。
+- Wikimedia Commons 抓图必须按标题过滤 + 判空；长卷类要挑 detail 图并校验宽高比，
+  否则会拿到细长条或完全错误的照片。
 - git 历史里 assets/js/app.js 硬依赖一批 DOM id，改 HTML 时如引用旧版需同步。
 - 旧版 tools/smoke-test.js 需用 macOS 自带 JavaScriptCore（jsc）运行，Node 跑不了
   （用了 print()/load()）。

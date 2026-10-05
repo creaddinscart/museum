@@ -13,6 +13,24 @@ const window = {};
 eval(fs.readFileSync(path.join(ROOT, 'sites.js'), 'utf8'));
 const SITES = window.MUSEUM_SITES;
 
+let RELICS = [];
+const relicsFile = path.join(ROOT, 'relics.js');
+if (fs.existsSync(relicsFile)) {
+  eval(fs.readFileSync(relicsFile, 'utf8'));
+  RELICS = window.MUSEUM_RELICS || [];
+}
+
+/* moving image: official channels of real museums, verified reachable */
+const VIDEOS = [
+  { label: 'British Museum', url: 'https://www.youtube.com/@britishmuseum', note: 'object films and curators talking' },
+  { label: 'Louvre', url: 'https://www.youtube.com/@MuseeLouvre', note: 'gallery tours and restoration work' },
+  { label: 'The Met', url: 'https://www.youtube.com/@metmuseum', note: 'exhibition walkthroughs, in depth' },
+  { label: 'Smithsonian', url: 'https://www.youtube.com/@smithsonian', note: 'air and space, natural history, more' },
+  { label: 'Digital Dunhuang', url: 'https://www.e-dunhuang.com', note: 'panoramic caves, no ticket needed' },
+  { label: 'Palace Museum Digital', url: 'https://digicol.dpm.org.cn', note: 'hundreds of thousands of objects catalogued' },
+  { label: 'Wikimedia Commons', url: 'https://commons.wikimedia.org', note: 'the source of every picture on this page' }
+];
+
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -101,6 +119,7 @@ const NAV = [
   { key: 'sites', file: 'sites.html', label: 'the collection' },
   { key: 'contact', file: 'contact.html', label: 'submit a site' },
   { key: 'exhibition', file: 'exhibition.html', label: 'exhibition' },
+  { key: 'gallery', file: 'gallery.html', label: 'photos & video' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
   { key: 'links', file: 'links.html', label: 'links' },
@@ -442,6 +461,66 @@ built.push(write('about.html', page({
   })));
 })();
 
+/* ---------------------------------------------------------------- gallery */
+(function () {
+  var pieces = RELICS.map(function (r) {
+    var where = r.site
+      ? '<a class="ext" href="' + esc(r.site) + '" rel="noopener noreferrer">' +
+        esc(r.museum) + '</a>'
+      : esc(r.museum);
+
+    return '<figure class="piece">' +
+      '<a href="' + esc(r.source) + '" rel="noopener noreferrer">' +
+        '<img src="' + esc(r.file) + '" alt="' + esc(r.name) + '" width="960" loading="lazy">' +
+      '</a>' +
+      '<figcaption>' +
+        '<b>' + esc(r.name) + '</b>' +
+        (r.copy ? ' <span class="chip">replica or copy</span>' : '') + '<br>' +
+        '<span class="host">' + where + ', ' + esc(r.place) + '</span><br>' +
+        '<span class="host">' + esc(r.period) + '</span><br>' +
+        (r.note ? '<span class="snip">' + esc(r.note) + '</span><br>' : '') +
+        '<span class="credit">' + esc(r.credit) + ' &middot; ' + esc(r.license) +
+        ' &middot; <a href="' + esc(r.source) + '" rel="noopener noreferrer">source</a></span>' +
+      '</figcaption>' +
+    '</figure>';
+  }).join('\n');
+
+  built.push(write('gallery.html', page({
+    key: 'gallery',
+    file: 'gallery.html',
+    prefix: '',
+    title: 'Photos and video - ' + TOTAL_TITLE,
+    description: 'Photographs of real objects held by real museums, with attribution, plus the moving image collections worth visiting.',
+    body:
+      '<h2>Photos &amp; video</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">Objects held by real museums,\n' +
+      'photographed in the room and online. ' + RELICS.length + ' pieces below: each one\n' +
+      'credited, linked to its source, and carrying the address of the museum that\n' +
+      'keeps it.<br>Pictures are stored on this site rather than hotlinked, so nothing\n' +
+      'here breaks when somebody else moves a file.</font></p>\n\n' +
+      '<div class="gallery">\n' + pieces + '\n</div>\n\n' +
+      '<hr width="720">\n\n' +
+      '<h3>Moving image</h3>\n\n' +
+      '<p class="lead" align="center"><font size="2">The museums themselves run the\n' +
+      'best footage. These are their own channels and collections.</font></p>\n\n' +
+      '<ul class="entrylist">\n' + VIDEOS.map(function (v) {
+        return '<li><a class="ext" href="' + esc(v.url) + '" rel="noopener noreferrer">' +
+          esc(v.label) + '</a><span class="snip">' + esc(v.note) + '</span></li>';
+      }).join('\n') + '\n</ul>\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      'Every photograph on this page comes from Wikimedia Commons and is shown under\n' +
+      'its original licence, named under each image.<br>\n' +
+      'A few are photographs of replicas rather than the original object; those are\n' +
+      'marked <span class="chip">replica or copy</span> rather than passed off as the\n' +
+      'thing itself.<br>\n' +
+      'Objects belong to the museums that hold them, and this page claims nothing\n' +
+      'beyond showing them.<br><br>\n' +
+      'Questions, corrections and sites sent in bulk are all welcome:\n' +
+      '<a href="mailto:mail@shit.pub">mail@shit.pub</a>.\n' +
+      '</font>\n</div>\n'
+  })));
+})();
+
 /* ------------------------------------------------------------------- 404 */
 /* GitHub Pages serves this file for any unknown path, including deep ones like
    /a/b/c, so every link and asset in it must be absolute. */
@@ -520,7 +599,8 @@ built.push(write('sitemap.html', page({
 
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
-  var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'contact.html',
+  var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'gallery.html',
+    'contact.html',
     'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
     CATS.map(function (c) { return 'categories/' + c + '.html'; }));
