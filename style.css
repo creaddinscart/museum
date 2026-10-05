@@ -278,6 +278,32 @@ color: #808080;
 margin-left: 8px;
 }
 
+.livebox {
+max-width: 720px;
+margin: 0 auto;
+border: 1px solid #dddddd;
+padding: 10px 12px;
+background: #ffffff;
+min-height: 40px;
+}
+
+.livebox img {
+display: block;
+max-width: 100%;
+height: auto;
+margin: 8px 0 2px;
+border: 1px solid #dddddd;
+}
+
+.livetable {
+border-collapse: collapse;
+}
+
+.livetable td {
+padding: 2px 0;
+border-bottom: 1px dotted #e4e4e4;
+}
+
 .plainlist {
 max-width: 720px;
 margin: 0 auto;

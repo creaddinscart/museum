@@ -10,8 +10,15 @@
 
 - `sites.js` = 唯一真值数据源（`window.MUSEUM_SITES`，cat/name/url/desc）。
   改内容只改这个文件，然后 `node build.js` 重新生成，**不要手改 HTML**。
-- `build.js`（node）生成 59 个页面：顶层 11 页 + `categories/<cat>.html` 每展区一页。
-  页面全静态，禁用 JS 也能完整浏览；`ROOM_NOTE` 是各展区导读文案。
+- `build.js`（node）生成 312 个页面：顶层 12 页 + `categories/<cat>.html` 47 个展区页
+  + `countries/<slug>.html` 250 个国家页。页面全静态，禁用 JS 也能完整浏览；
+  `ROOM_NOTE` 是各展区导读文案。
+- `live.html` 是唯一依赖 JS 的页面：浏览器直连 CoinGecko / Frankfurter /
+  Hacker News / USGS / Open-Meteo / wheretheiss.at / NASA APOD，60 秒自动刷新。
+  股指与大宗商品没有可用的免密钥 CORS 源，不要再去试 Stooq / Yahoo / Binance。
+- **第三个数据源** `countries.js`（`window.MUSEUM_COUNTRIES`，250 条）供国家馆用。
+  由 mledoze/countries（旧 schema，无人口）+ 世界银行 API（人口/GDP/寿命）合并生成，
+  地图链接由经纬度推导。**restcountries.com 已全线停服，不要再试。**
 - **第二个数据源** `relics.js`（`window.MUSEUM_RELICS`，29 件真实文物）供 `gallery.html` 用。
   字段 name/museum/place/period/site/file/source/license/credit/note/copy；
   `site`=博物馆官网，`source`=Commons 原图页，`copy:true`=复刻品（页面打 replica 标）。

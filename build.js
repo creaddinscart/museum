@@ -20,6 +20,472 @@ if (fs.existsSync(relicsFile)) {
   RELICS = window.MUSEUM_RELICS || [];
 }
 
+let COUNTRIES = [];
+const countriesFile = path.join(ROOT, 'countries.js');
+if (fs.existsSync(countriesFile)) {
+  eval(fs.readFileSync(countriesFile, 'utf8'));
+  COUNTRIES = window.MUSEUM_COUNTRIES || [];
+}
+const BY_C3 = {};
+COUNTRIES.forEach(function (c) { BY_C3[c.c3] = c; });
+
+/* which country a site belongs to, where that can be placed with confidence.
+   ISO 3166-1 alpha-3, or INT for bodies answerable to more than one state. */
+var SITE_CC = {
+  "12306": "CHN",
+  "1Password": "CAN",
+  "36Kr": "CHN",
+  "51job": "CHN",
+  "ACM": "USA",
+  "AIA": "USA",
+  "AP News": "USA",
+  "ASEAN": "INT",
+  "AWS": "USA",
+  "Accenture": "USA",
+  "Adafruit": "USA",
+  "Adobe": "USA",
+  "Aeon": "GBR",
+  "African Union": "INT",
+  "Airbnb": "USA",
+  "Akamai": "USA",
+  "Alfred": "GBR",
+  "Alibaba": "CHN",
+  "Alibaba Cloud": "CHN",
+  "All About Circuits": "USA",
+  "AlphaFold DB": "USA",
+  "Amazon": "USA",
+  "Android Developers": "USA",
+  "Ansible": "USA",
+  "Anthropic": "USA",
+  "Aozora Bunko": "JPN",
+  "Apache HTTP Server": "USA",
+  "Apache Kafka": "USA",
+  "Apple Developer": "USA",
+  "Arduino": "ITA",
+  "Arianespace": "FRA",
+  "Ars Technica": "USA",
+  "ArtStation": "USA",
+  "Artsy": "USA",
+  "Asana": "USA",
+  "Ask Ubuntu": "USA",
+  "Atlassian": "AUS",
+  "Azure": "USA",
+  "BBC": "GBR",
+  "BCG": "USA",
+  "BIS": "INT",
+  "Bain": "USA",
+  "Bandcamp": "USA",
+  "Behance": "USA",
+  "Best Buy": "USA",
+  "Bilibili": "CHN",
+  "Bitbucket": "USA",
+  "Bitwarden": "USA",
+  "Bloomberg": "USA",
+  "Blue Origin": "USA",
+  "Bluesky": "USA",
+  "Booking.com": "NLD",
+  "Bootstrap": "USA",
+  "Boss Zhipin": "CHN",
+  "Brilliant": "USA",
+  "Britannica": "USA",
+  "British Museum": "GBR",
+  "Bun": "USA",
+  "CDC": "USA",
+  "CERN": "CHE",
+  "CISA": "USA",
+  "CME Group": "USA",
+  "CMake": "USA",
+  "CNN": "USA",
+  "CNRS": "FRA",
+  "CNSA": "CHN",
+  "CVE": "USA",
+  "Caddy": "USA",
+  "Caixin": "CHN",
+  "Cambridge University": "GBR",
+  "Can I use": "USA",
+  "Canva": "AUS",
+  "Carbon Design System": "USA",
+  "Centre Pompidou": "FRA",
+  "ChatGPT": "USA",
+  "CircleCI": "USA",
+  "Claude": "USA",
+  "Cleveland Clinic": "USA",
+  "Cloudflare": "USA",
+  "Cochrane": "GBR",
+  "Codeberg": "DEU",
+  "CoinDesk": "USA",
+  "Coinbase": "USA",
+  "Copernicus": "INT",
+  "Cornell LII": "USA",
+  "Coursera": "USA",
+  "CourtListener": "USA",
+  "Crossref": "USA",
+  "Crunchbase": "USA",
+  "DEV Community": "USA",
+  "Databricks": "USA",
+  "Datadog": "USA",
+  "DeepL": "DEU",
+  "DeepMind": "GBR",
+  "Deno": "USA",
+  "Der Spiegel": "DEU",
+  "Deutsches Museum": "DEU",
+  "DeviantArt": "USA",
+  "Dice": "USA",
+  "DigiKey": "USA",
+  "Digital Public Library of America": "USA",
+  "DigitalOcean": "USA",
+  "Discogs": "USA",
+  "Discord": "USA",
+  "Divisare": "ITA",
+  "Docker": "USA",
+  "Domus": "ITA",
+  "Dribbble": "USA",
+  "Duden": "DEU",
+  "Duolingo": "USA",
+  "ECB": "INT",
+  "ECMA International": "CHE",
+  "ECMWF": "INT",
+  "EEVBlog": "AUS",
+  "ESA": "INT",
+  "El Pais": "ESP",
+  "Elasticsearch": "USA",
+  "Electronic Frontier Foundation": "USA",
+  "Etsy": "USA",
+  "European Union": "INT",
+  "Europeana": "INT",
+  "Expedia": "USA",
+  "Exploit Database": "USA",
+  "Fastly": "USA",
+  "Fermilab": "USA",
+  "Figma": "USA",
+  "Financial Times": "GBR",
+  "Firebase": "USA",
+  "First Round Review": "USA",
+  "Fiverr": "ISR",
+  "Flightradar24": "SWE",
+  "Fly.io": "USA",
+  "Font Awesome": "USA",
+  "Forbes": "USA",
+  "Forvo": "ESP",
+  "Free Music Archive": "USA",
+  "GCC": "USA",
+  "GNU Emacs": "USA",
+  "Gallica": "FRA",
+  "Getty Museum": "USA",
+  "Git": "USA",
+  "GitHub": "USA",
+  "GitHub Actions": "USA",
+  "GitHub Copilot": "USA",
+  "GitLab": "USA",
+  "Glassdoor": "USA",
+  "Go": "USA",
+  "Godly": "USA",
+  "Google AI": "USA",
+  "Google Arts & Culture": "USA",
+  "Google Cloud": "USA",
+  "Google Developers": "USA",
+  "Google Fonts": "USA",
+  "Google Gemini": "USA",
+  "Google Scholar": "USA",
+  "Google Translate": "USA",
+  "GovInfo": "USA",
+  "Grafana": "USA",
+  "Guggenheim": "USA",
+  "HKEX": "HKG",
+  "Hackaday": "USA",
+  "Hacker News": "USA",
+  "HackerRank": "USA",
+  "Hackster": "USA",
+  "Harvard Business Review": "USA",
+  "Harvard University": "USA",
+  "Have I Been Pwned": "USA",
+  "Heavens-Above": "USA",
+  "Hermitage": "RUS",
+  "Hetzner": "DEU",
+  "Httpster": "USA",
+  "Huawei Cloud": "CHN",
+  "Hugging Face": "USA",
+  "IBM": "USA",
+  "ICC": "INT",
+  "ICourse163": "CHN",
+  "IEEE": "USA",
+  "IEEE Spectrum": "USA",
+  "IETF": "INT",
+  "IMDb": "USA",
+  "IMF": "INT",
+  "ISO": "CHE",
+  "ISRO": "IND",
+  "ITER": "CHE",
+  "InVision": "USA",
+  "Indeed": "USA",
+  "Internet Archive": "USA",
+  "Interpol": "INT",
+  "JAXA": "JPN",
+  "JD.com": "CHN",
+  "JSTOR": "USA",
+  "James Webb Space Telescope": "USA",
+  "Japan Exchange Group": "JPN",
+  "Jenkins": "USA",
+  "JetBrains": "DEU",
+  "Jisho": "JPN",
+  "Jupyter": "USA",
+  "Justia": "USA",
+  "Kaggle": "USA",
+  "KeePassXC": "USA",
+  "Khan Academy": "USA",
+  "Kotlin": "USA",
+  "Krebs on Security": "USA",
+  "Kubernetes": "USA",
+  "LIGO": "USA",
+  "LLVM": "USA",
+  "LangChain": "USA",
+  "Last.fm": "GBR",
+  "Le Monde": "FRA",
+  "LeetCode": "USA",
+  "Let's Encrypt": "USA",
+  "Letterboxd": "NZL",
+  "Library of Congress": "USA",
+  "Liepin": "CHN",
+  "LinkedIn": "USA",
+  "LlamaIndex": "USA",
+  "Lobsters": "USA",
+  "Louvre": "FRA",
+  "MATLAB": "USA",
+  "MDN Web Docs": "USA",
+  "MIT": "USA",
+  "MIT OpenCourseWare": "USA",
+  "MIT Technology Review": "USA",
+  "MITRE ATT&CK": "USA",
+  "MarineTraffic": "GRC",
+  "Mastodon": "DEU",
+  "Material Design": "USA",
+  "Max Planck Society": "DEU",
+  "Mayo Clinic": "USA",
+  "McKinsey": "USA",
+  "Medium": "USA",
+  "Memrise": "GBR",
+  "Mercado Libre": "MEX",
+  "Merriam-Webster": "USA",
+  "Met Office": "GBR",
+  "Meta AI": "USA",
+  "Metacritic": "USA",
+  "Metafilter": "USA",
+  "Metasploit": "USA",
+  "Microsoft Learn": "USA",
+  "Mistral AI": "FRA",
+  "MoMA": "USA",
+  "MongoDB": "USA",
+  "Mouser": "USA",
+  "Musopen": "USA",
+  "Muzli": "USA",
+  "MySQL": "USA",
+  "NASA": "USA",
+  "NASA ADS": "USA",
+  "NATO": "INT",
+  "NEJM": "USA",
+  "NHK World": "JPN",
+  "NIH": "USA",
+  "NOAA": "USA",
+  "NPR": "USA",
+  "NVD": "USA",
+  "NVIDIA Developer": "USA",
+  "NYSE": "USA",
+  "Nasdaq": "USA",
+  "National Bureau of Statistics of China": "CHN",
+  "National Gallery of Art": "USA",
+  "National Geographic": "USA",
+  "National Museum of China": "CHN",
+  "Nature": "GBR",
+  "Nautilus": "USA",
+  "Netlify": "USA",
+  "Next.js": "USA",
+  "Nginx": "USA",
+  "Nielsen Norman Group": "USA",
+  "Node.js": "USA",
+  "Notion": "USA",
+  "NuGet": "USA",
+  "OECD": "INT",
+  "ONNX": "USA",
+  "ORCID": "USA",
+  "OVHcloud": "FRA",
+  "OWASP": "INT",
+  "Obsidian": "USA",
+  "One Page Love": "USA",
+  "OpenAI": "USA",
+  "OpenAlex": "USA",
+  "OpenCV": "USA",
+  "OpenStax": "USA",
+  "Openverse": "USA",
+  "Oracle": "USA",
+  "Overleaf": "GBR",
+  "Oxford University": "GBR",
+  "PBS": "USA",
+  "PKULaw": "CHN",
+  "PLOS": "USA",
+  "PNAS": "USA",
+  "Packagist": "USA",
+  "Palace Museum": "CHN",
+  "People's Bank of China": "CHN",
+  "Perplexity": "USA",
+  "Pexels": "DEU",
+  "Pinterest": "USA",
+  "Planet Labs": "USA",
+  "PortSwigger": "GBR",
+  "Prado": "ESP",
+  "Privacy Guides": "USA",
+  "Product Hunt": "USA",
+  "Prometheus": "USA",
+  "PubMed": "USA",
+  "PyPI": "USA",
+  "PyTorch": "USA",
+  "Python": "USA",
+  "Quanta Magazine": "USA",
+  "Quizlet": "USA",
+  "Quora": "USA",
+  "RCSB Protein Data Bank": "USA",
+  "RFC Editor": "USA",
+  "RIBA": "GBR",
+  "RabbitMQ": "USA",
+  "Radix UI": "USA",
+  "Rakuten": "JPN",
+  "Raspberry Pi": "GBR",
+  "React": "USA",
+  "Red Hat": "USA",
+  "Reddit": "USA",
+  "Redis": "USA",
+  "Remote OK": "USA",
+  "ResearchGate": "DEU",
+  "Reuters": "GBR",
+  "Reverso Context": "FRA",
+  "Rijksmuseum": "NLD",
+  "Rocket Lab": "USA",
+  "Rome2rio": "AUS",
+  "Roscosmos": "RUS",
+  "Rotten Tomatoes": "USA",
+  "Royal Society": "GBR",
+  "RubyGems": "USA",
+  "Rust": "USA",
+  "SANS Institute": "USA",
+  "SAP": "DEU",
+  "SETI Institute": "USA",
+  "SLAC": "USA",
+  "SSL Labs": "USA",
+  "Saatchi Art": "USA",
+  "Salesforce": "USA",
+  "Schneier on Security": "USA",
+  "Science": "USA",
+  "Semantic Scholar": "USA",
+  "Sentry": "USA",
+  "Sequoia Capital": "USA",
+  "Server Fault": "USA",
+  "ServiceNow": "USA",
+  "Shanghai Museum": "CHN",
+  "Shanghai Stock Exchange": "CHN",
+  "Shenzhen Stock Exchange": "CHN",
+  "Shodan": "USA",
+  "Shopify": "CAN",
+  "SiteInspire": "USA",
+  "Sketch": "NLD",
+  "Skyscanner": "GBR",
+  "Slack": "USA",
+  "Smashing Magazine": "DEU",
+  "Smithsonian": "USA",
+  "Snowflake": "USA",
+  "SoundCloud": "DEU",
+  "SpaceX": "USA",
+  "SparkFun": "USA",
+  "Stack Exchange": "USA",
+  "Stack Overflow": "USA",
+  "Stanford University": "USA",
+  "Stellarium Web": "USA",
+  "Substack": "USA",
+  "Supabase": "USA",
+  "Swift": "USA",
+  "TED": "USA",
+  "Tailwind CSS": "USA",
+  "Tandem": "DEU",
+  "Taobao": "CHN",
+  "Tate": "GBR",
+  "TechCrunch": "USA",
+  "Tencent Cloud": "CHN",
+  "TensorFlow": "USA",
+  "Terraform": "USA",
+  "The Guardian": "GBR",
+  "The Lancet": "GBR",
+  "The Met": "USA",
+  "The New York Times": "USA",
+  "The Odin Project": "USA",
+  "The Verge": "USA",
+  "Todoist": "USA",
+  "Tokyo National Museum": "JPN",
+  "Tor Project": "USA",
+  "Trello": "USA",
+  "Trip.com": "CHN",
+  "Tripadvisor": "USA",
+  "Trove": "AUS",
+  "TypeScript": "USA",
+  "UN": "INT",
+  "UN Comtrade": "INT",
+  "UNESCO": "INT",
+  "UNESCO World Heritage Centre": "INT",
+  "UNHCR": "INT",
+  "UNICEF": "INT",
+  "US National Archives": "USA",
+  "US Supreme Court": "USA",
+  "USGS": "USA",
+  "Uber": "USA",
+  "Udacity": "USA",
+  "Udemy": "USA",
+  "Uffizi": "ITA",
+  "Unicode Consortium": "USA",
+  "Unpaywall": "USA",
+  "Unsplash": "CAN",
+  "Upwork": "USA",
+  "V2EX": "CHN",
+  "VMware": "USA",
+  "VS Code": "USA",
+  "Van Gogh Museum": "NLD",
+  "Vercel": "USA",
+  "Vim": "USA",
+  "Vimeo": "USA",
+  "VirusTotal": "ESP",
+  "W3C": "INT",
+  "WHATWG": "USA",
+  "WHO": "INT",
+  "WIPO": "CHE",
+  "WTO": "INT",
+  "Wall Street Journal": "USA",
+  "Walmart": "USA",
+  "Weights & Biases": "USA",
+  "Wellfound": "USA",
+  "Wikidata": "USA",
+  "Wikipedia": "USA",
+  "Wired": "USA",
+  "Wolfram Alpha": "USA",
+  "WooCommerce": "USA",
+  "Workday": "USA",
+  "World Bank": "INT",
+  "World Food Programme": "INT",
+  "XuetangX": "CHN",
+  "Y Combinator": "USA",
+  "Zenodo": "CHE",
+  "Zhaopin": "CHN",
+  "Zoho": "IND",
+  "Zoom": "USA",
+  "Zotero": "USA",
+  "a16z": "USA",
+  "arXiv": "USA",
+  "eBay": "USA",
+  "eLife": "GBR",
+  "edX": "USA",
+  "freeCodeCamp": "USA",
+  "iNaturalist": "USA",
+  "jQuery": "USA",
+  "levels.fyi": "USA",
+  "npm": "USA",
+  "spaCy": "DEU"
+};
+
 /* moving image: official channels of real museums, verified reachable */
 const VIDEOS = [
   { label: 'British Museum', url: 'https://www.youtube.com/@britishmuseum', note: 'object films and curators talking' },
@@ -119,6 +585,8 @@ const NAV = [
   { key: 'sites', file: 'sites.html', label: 'the collection' },
   { key: 'contact', file: 'contact.html', label: 'submit a site' },
   { key: 'exhibition', file: 'exhibition.html', label: 'exhibition' },
+  { key: 'countries', file: 'countries.html', label: 'countries' },
+  { key: 'live', file: 'live.html', label: 'live' },
   { key: 'gallery', file: 'gallery.html', label: 'photos & video' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
@@ -187,6 +655,8 @@ function page(opts) {
     '<p class="foot" align="center"><font size="2" color="#808080">&copy; 2009-2025 ' +
     TOTAL_TITLE + ' &middot; <a href="mailto:mail@shit.pub">mail@shit.pub</a> ' +
     '&middot; <a href="' + prefix + 'index.html">m.shit.pub</a></font></p>\n\n' +
+    (opts.key === 'home' || opts.key === 'live'
+      ? '<script src="' + prefix + 'picks.js"></script>\n' : '') +
     '<script src="' + prefix + 'script.js"></script>\n</body>\n</html>\n';
 
   return body;
@@ -242,10 +712,20 @@ built.push(write('index.html', page({
     'Questions, corrections and sites sent in bulk are all welcome.<br>\n' +
     'A reply usually follows within a few days.</font></p></td>\n' +    '</tr>\n</table>\n\n<hr width="720">\n\n' +
     '<p align="center"><b><font color="#c00000">Collection at a glance</font></b></p>\n\n' +
-    '<div class="message" align="center">\n<font size="2">\n' +
-    SITES.length + ' real sites &middot; ' + CATS.length + ' rooms<br>\n' +
+    '<h3>Out of storage</h3>\n\n' +
+    '<p class="lead" align="center"><font size="2">Three pieces drawn at\n' +
+    'random. Reload the page for different ones.</font></p>\n\n' +
+    '<div class="livebox" data-live="random">\n' +
+    '<font size="2" color="#808080">A random piece appears here when\n' +
+    'scripting is available.</font>\n</div>\n\n' +
+    '<div class="message" align="center">\n' +
+    '<font size="2">\n' +
+    SITES.length + ' real sites &middot; ' + CATS.length + ' rooms &middot; ' +
+    COUNTRIES.length + ' countries &middot; ' + RELICS.length + ' objects<br>\n' +
     '<a href="categories.html">browse the rooms</a> &middot;\n' +
     '<a href="sites.html">the complete directory</a> &middot;\n' +
+    '<a href="countries.html">every country</a> &middot;\n' +
+    '<a href="gallery.html">photos &amp; video</a> &middot;\n' +
     '<a href="sitemap.html">site map</a>\n' +
     '</font>\n</div>\n'
 })));
@@ -521,6 +1001,276 @@ built.push(write('about.html', page({
   })));
 })();
 
+/* ------------------------------------------------------------- countries */
+(function () {
+  if (!COUNTRIES.length) return;
+
+  function commas(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function wiki(host, n) {
+    return 'https://' + host + '/wiki/' + encodeURIComponent(n.replace(/ /g, '_'));
+  }
+
+  function dirLat(v, pos, neg) {
+    return Math.abs(v).toFixed(2) + '&deg; ' + (v >= 0 ? pos : neg);
+  }
+
+  function money(v) {
+    if (!v) return '&mdash;';
+    if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + ' trillion';
+    if (v >= 1e9) return '$' + (v / 1e9).toFixed(1) + ' billion';
+    if (v >= 1e6) return '$' + commas(Math.round(v / 1e6)) + ' million';
+    return '$' + commas(v);
+  }
+
+  /* which sites and objects belong to which country */
+  var byCountry = {};
+  SITES.forEach(function (s) {
+    var cc = SITE_CC[s.name];
+    if (!cc || cc === 'INT') return;
+    (byCountry[cc] = byCountry[cc] || []).push(s);
+  });
+
+  var byRelic = {};
+  RELICS.forEach(function (r) {
+    if (!r.cc || r.cc === 'INT') return;
+    (byRelic[r.cc] = byRelic[r.cc] || []).push(r);
+  });
+
+  /* ------------------------------------------------------- index by region */
+  var regions = [];
+  var regMap = {};
+  COUNTRIES.forEach(function (c) {
+    var r = c.reg || 'Other';
+    if (!regMap[r]) { regMap[r] = []; regions.push(r); }
+    regMap[r].push(c);
+  });
+  regions.sort();
+
+  var jump = regions.map(function (r) {
+    return '<a href="#reg-' + r.toLowerCase().replace(/[^a-z]+/g, '-') + '">' + esc(r) + '</a>';
+  }).join(' &middot; ');
+
+  var idx = regions.map(function (r) {
+    var list = regMap[r].slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
+    return '<h3 id="reg-' + r.toLowerCase().replace(/[^a-z]+/g, '-') + '">' + esc(r) + '</h3>\n' +
+      '<p class="lead"><font size="2">' + list.length + ' entries.</font></p>\n' +
+      '<ul class="plainlist cols">\n' + list.map(function (c) {
+        var n = byCountry[c.c3] ? byCountry[c.c3].length : 0;
+        return '<li>' + (c.flag ? esc(c.flag) + ' ' : '') +
+          '<a href="countries/' + c.slug + '.html">' + esc(c.n) + '</a>' +
+          (n ? '<font size="2" color="#808080"> (' + n + ')</font>' : '') + '</li>';
+      }).join('\n') + '\n</ul>\n';
+  }).join('\n');
+
+  built.push(write('countries.html', page({
+    key: 'countries',
+    file: 'countries.html',
+    prefix: '',
+    title: 'Countries - ' + TOTAL_TITLE,
+    description: 'Every country and territory in the world: ' + COUNTRIES.length +
+      ' pages of facts, maps and the parts of the collection filed under each one.',
+    body:
+      '<h2>Countries</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">' + COUNTRIES.length +
+      ' countries and territories, each with its own page:\n' +
+      'capital, population, area, languages, currency, neighbours and\n' +
+      'maps, followed by whatever the museum holds from that\n' +
+      'country.</font></p>\n\n' +
+      '<div class="filterbox" align="center">\n' +
+      '<font size="2"><label for="filter">filter this page</label>\n' +
+      '<input id="filter" type="search" size="28" autocomplete="off" spellcheck="false">\n' +
+      '<span id="filterCount" class="tally"></span></font>\n</div>\n\n' +
+      '<p class="jump"><font size="2">' + jump + '</font></p>\n\n' + idx + '\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      'Numbers come from a public country dataset (CC0) and are shown as\n' +
+      'supplied: they move, and no page here is an authority on\n' +
+      'borders.<br>\n' +
+      'The count after each name is how many sites in the\n' +
+      '<a href="sites.html">collection</a> belong to that country.\n' +
+      '</font>\n</div>\n'
+  })));
+
+  /* ------------------------------------------------------ one page each */
+  function factRow(k, v) {
+    return '<tr><td width="190" align="right" valign="top"><font size="2">' +
+      esc(k) + '</font></td>\n<td valign="top"><font size="2">' + v + '</font></td></tr>\n';
+  }
+
+  COUNTRIES.forEach(function (c, i) {
+    var prev = i > 0 ? COUNTRIES[i - 1] : null;
+    var next = i < COUNTRIES.length - 1 ? COUNTRIES[i + 1] : null;
+
+    var pager = '<table class="pager" width="720" cellpadding="0" cellspacing="0" border="0">\n<tr>\n' +
+      '<td align="left"><font size="2">' +
+      (prev ? '<a href="' + prev.slug + '.html">&larr; ' + esc(prev.n) + '</a>' : '&nbsp;') +
+      '</font></td>\n' +
+      '<td align="center"><font size="2"><a href="../countries.html">all countries</a></font></td>\n' +
+      '<td align="right"><font size="2">' +
+      (next ? '<a href="' + next.slug + '.html">' + esc(next.n) + ' &rarr;</a>' : '&nbsp;') +
+      '</font></td>\n' +
+      '</tr>\n</table>\n';
+
+    var borders = (c.borders || []).map(function (b) {
+      var o = BY_C3[b];
+      return o ? '<a href="' + o.slug + '.html">' + esc(o.n) + '</a>' : esc(b);
+    }).join(', ');
+
+    var facts =
+      factRow('official name', esc(c.o)) +
+      factRow('capital', c.cap ? esc(c.cap) : '&mdash;') +
+      factRow('population', c.pop ? commas(c.pop) : '&mdash;') +
+      factRow('area', c.area ? commas(c.area) + ' km&sup2;' : '&mdash;') +
+      factRow('economy', money(c.gdp)) +
+      factRow('life expectancy', c.life ? c.life + ' years' : '&mdash;') +
+      factRow('region', esc([c.reg, c.sub].filter(Boolean).join(' / ')) || '&mdash;') +
+      factRow('languages', (c.langs && c.langs.length) ? esc(c.langs.join(', ')) : '&mdash;') +
+      factRow('currency', (c.cur && c.cur.length) ? esc(c.cur.join(', ')) : '&mdash;') +
+      factRow('calling code', c.idd ? esc(c.idd) : '&mdash;') +
+      factRow('internet domain', (c.tld && c.tld.length) ? esc(c.tld.join(' ')) : '&mdash;') +
+      factRow('neighbours', borders || 'none (island or enclave)') +
+      factRow('position', (c.lat !== null && c.lng !== null)
+        ? dirLat(c.lat, 'N', 'S') + ', ' + dirLat(c.lng, 'E', 'W') : '&mdash;') +
+      factRow('status', [c.un ? 'UN member' : 'not a UN member',
+        c.ind ? '' : 'not independent', c.ll ? 'landlocked' : '']
+        .filter(Boolean).join(', ') || '&mdash;');
+
+    var maps = (c.lat !== null && c.lng !== null)
+      ? '<li><a class="ext" href="https://www.openstreetmap.org/?mlat=' + c.lat +
+        '&amp;mlon=' + c.lng + '#map=5/' + c.lat + '/' + c.lng +
+        '" rel="noopener noreferrer">OpenStreetMap</a></li>\n' +
+        '<li><a class="ext" href="https://www.google.com/maps/@' + c.lat + ',' + c.lng +
+        ',6z" rel="noopener noreferrer">Google Maps</a></li>\n'
+      : '';
+
+    var links = '<ul class="plainlist">\n' +
+      '<li><a class="ext" href="' + wiki('en.wikipedia.org', c.n) + '" rel="noopener noreferrer">Wikipedia</a></li>\n' +
+      '<li><a class="ext" href="' + wiki('en.wikivoyage.org', c.n) + '" rel="noopener noreferrer">Wikivoyage</a></li>\n' +
+      maps +
+      '</ul>\n';
+
+    var mine = byCountry[c.c3] || [];
+    var holds = byRelic[c.c3] || [];
+
+    var sitesBlock = mine.length
+      ? '<ul class="entrylist">\n' + mine.map(function (s) {
+          return entryHtml(s, true);
+        }).join('\n') + '\n</ul>\n'
+      : '<p class="lead"><font size="2">Nothing in the collection carries this\n' +
+        'country yet. <a href="../contact.html">Send something in</a> and it\n' +
+        'will be filed here.</font></p>\n';
+
+    var relicBlock = holds.length
+      ? '<ul class="entrylist">\n' + holds.map(function (r) {
+          return '<li><a class="ext" href="' + esc(r.source) +
+            '" rel="noopener noreferrer">' + esc(r.name) + '</a>' +
+            '<span class="host">' + esc(r.museum) + ', ' + esc(r.place) + '</span>' +
+            '<span class="snip">' + esc(r.note) + '</span></li>';
+        }).join('\n') + '\n</ul>\n'
+      : '';
+
+    built.push(write('countries/' + c.slug + '.html', page({
+      key: 'countries',
+      file: 'countries/' + c.slug + '.html',
+      prefix: '../',
+      title: c.n + ' - ' + TOTAL_TITLE,
+      description: c.n + ': capital, population, area, languages, currency, neighbours and maps, plus ' +
+        mine.length + ' sites from the collection filed under this country.',
+      body:
+        '<h2>' + (c.flag ? esc(c.flag) + ' ' : '') + esc(c.n) + '</h2>\n\n' +
+        '<p class="lead" align="center"><font size="2">' +
+        esc([c.sub, c.reg].filter(Boolean).join(', ') || c.cont || '') +
+        (c.cap ? ' &middot; capital ' + esc(c.cap) : '') +
+        (c.pop ? ' &middot; ' + commas(c.pop) + ' people' : '') +
+        '</font></p>\n\n' +
+        pager + '\n\n' +
+        '<h3>Facts</h3>\n\n' +
+        '<table class="formtable" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
+        facts + '</table>\n\n' +
+        '<h3>Elsewhere</h3>\n\n' + links + '\n' +
+        '<h3>In this collection (' + mine.length + ')</h3>\n\n' + sitesBlock + '\n' +
+        (holds.length ? '<h3>Objects kept here (' + holds.length + ')</h3>\n\n' + relicBlock + '\n' : '') +
+        '<div class="message">\n<font size="2">\n' +
+        'Figures are taken from a public country dataset (CC0) and are shown as\n' +
+        'supplied.<br>\n' +
+        'Questions, corrections and sites sent in bulk are all welcome:\n' +
+        '<a href="mailto:mail@shit.pub">mail@shit.pub</a> &middot;\n' +
+        '<a href="../contact.html">submit a site</a>\n' +
+        '</font>\n</div>\n\n' + pager
+    })));
+  });
+})();
+
+/* ------------------------------------------------------------------ live */
+/* A page that reads public, key-free APIs straight from the browser, so the
+   numbers move without a server. Each block has a static fallback: with
+   scripting off the page still reads as a plain list of sources. */
+(function () {
+  var PANELS = [
+    { id: 'crypto', title: 'Money &mdash; crypto', note: 'Prices from CoinGecko, refreshed every minute.' },
+    { id: 'fx', title: 'Money &mdash; currencies', note: 'Reference rates from Frankfurter (European Central Bank).' },
+    { id: 'fear', title: 'Money &mdash; mood', note: 'Fear and greed index for crypto, from alternative.me.' },
+    { id: 'tech', title: 'Technology', note: 'Top stories on Hacker News right now.' },
+    { id: 'quakes', title: 'Earth', note: 'Significant earthquakes in the last week, from the USGS feed.' },
+    { id: 'space', title: 'Space', note: 'Where the space station is, and NASA\'s picture of the day.' },
+    { id: 'weather', title: 'Weather', note: 'Current conditions in a few capitals, from Open-Meteo.' },
+    { id: 'picks', title: 'Out of storage', note: 'Three pieces drawn at random from the collection. Reload for different ones.' }
+  ];
+
+  var body = '<h2>Live</h2>\n\n' +
+    '<p class="lead" align="center"><font size="2">Figures read straight from\n' +
+    'public sources, in your browser, every minute on the minute. Nothing is\n' +
+    'stored and nothing passes through this site.<br>' +
+    'Last updated <b id="liveStamp">on load</b>. ' +
+    '<span id="liveTick" class="tally"></span></font></p>\n\n' +
+    '<div class="message">\n<font size="2">\n' +
+    'This page needs scripting and a network connection. The rest of the\n' +
+    'museum does not: everything else here is plain files.\n' +
+    '</font>\n</div>\n\n';
+
+  PANELS.forEach(function (p) {
+    body += '<h3 id="live-' + p.id + '">' + p.title + '</h3>\n\n' +
+      '<p class="lead"><font size="2">' + p.note + '</font></p>\n\n' +
+      '<div class="livebox" data-live="' + p.id + '">\n' +
+      '<font size="2" color="#808080">Waiting for ' + esc(p.id) + '. ' +
+      'If nothing arrives, the source is refusing the request.</font>\n</div>\n\n';
+  });
+
+  body += '<div class="message">\n<font size="2">\n' +
+    'Sources: CoinGecko, Frankfurter, Alternative.me, Hacker News, the USGS\n' +
+    'earthquake feed, Open-Meteo, Where the ISS at, and NASA APOD.<br>\n' +
+    'Numbers are shown as supplied and are not advice of any kind.\n' +
+    '</font>\n</div>\n';
+
+  built.push(write('live.html', page({
+    key: 'live',
+    file: 'live.html',
+    prefix: '',
+    title: 'Live - ' + TOTAL_TITLE,
+    description: 'Live figures for money, technology, earth, space and weather, read from public sources every minute.',
+    body: body
+  })));
+})();
+
+/* --------------------------------------------------- picks for the front page */
+/* A compact index of the collection, used only to draw a random piece on each
+   visit. Kept separate so the front page stays light. */
+(function () {
+  var sites = SITES.map(function (s) {
+    return { n: s.name, u: s.url, c: s.cat, d: s.desc };
+  });
+  var relics = RELICS.map(function (r) {
+    return { n: r.name, u: r.source, m: r.museum, p: r.place, d: r.note, f: r.file };
+  });
+  var txt = '/* picks.js - generated by build.js. Used to draw a random piece\n' +
+    '   from the collection on each visit. Do not edit by hand. */\n' +
+    'window.MUSEUM_PICKS = ' + JSON.stringify({ sites: sites, relics: relics }, null, 0) + ';\n';
+  write('picks.js', txt);
+  built.push('picks.js');
+})();
+
 /* ------------------------------------------------------------------- 404 */
 /* GitHub Pages serves this file for any unknown path, including deep ones like
    /a/b/c, so every link and asset in it must be absolute. */
@@ -587,6 +1337,7 @@ built.push(write('sitemap.html', page({
     '<li><a href="index.html">home</a></li>\n' +
     '<li><a href="categories.html">categories</a></li>\n' +
     '<li><a href="sites.html">sites (complete directory)</a></li>\n' +
+    '<li><a href="countries.html">countries (' + COUNTRIES.length + ' pages)</a></li>\n' +
     '<li><a href="acknowledgments.html">acknowledgments</a></li>\n' +
     '<li><a href="links.html">links to other collections</a></li>\n' +
     '<li><a href="about.html">about the collector</a></li>\n' +
@@ -600,10 +1351,11 @@ built.push(write('sitemap.html', page({
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
   var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'gallery.html',
-    'contact.html',
+    'contact.html', 'countries.html', 'live.html',
     'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
-    CATS.map(function (c) { return 'categories/' + c + '.html'; }));
+    CATS.map(function (c) { return 'categories/' + c + '.html'; })).concat(
+    COUNTRIES.map(function (c) { return 'countries/' + c.slug + '.html'; }));
 
   var xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
