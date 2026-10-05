@@ -29,6 +29,13 @@ if (fs.existsSync(countriesFile)) {
 const BY_C3 = {};
 COUNTRIES.forEach(function (c) { BY_C3[c.c3] = c; });
 
+let PLUGS = [];
+const plugsFile = path.join(ROOT, 'plugs.js');
+if (fs.existsSync(plugsFile)) {
+  eval(fs.readFileSync(plugsFile, 'utf8'));
+  PLUGS = window.MUSEUM_PLUGS || [];
+}
+
 /* which country a site belongs to, where that can be placed with confidence.
    ISO 3166-1 alpha-3, or INT for bodies answerable to more than one state. */
 var SITE_CC = {
@@ -587,6 +594,7 @@ const NAV = [
   { key: 'exhibition', file: 'exhibition.html', label: 'exhibition' },
   { key: 'countries', file: 'countries.html', label: 'countries' },
   { key: 'live', file: 'live.html', label: 'live' },
+  { key: 'plugs', file: 'plugs.html', label: 'plugs' },
   { key: 'gallery', file: 'gallery.html', label: 'photos & video' },
   { key: 'acknowledgments', file: 'acknowledgments.html', label: 'acknowledgments' },
   { key: 'sitemap', file: 'sitemap.html', label: 'site map' },
@@ -1130,6 +1138,20 @@ built.push(write('about.html', page({
       factRow('currency', (c.cur && c.cur.length) ? esc(c.cur.join(', ')) : '&mdash;') +
       factRow('calling code', c.idd ? esc(c.idd) : '&mdash;') +
       factRow('internet domain', (c.tld && c.tld.length) ? esc(c.tld.join(' ')) : '&mdash;') +
+      factRow('mains power', (c.plug && c.plug.length)
+        ? '<b>' + c.plug.map(function (p) {
+            return '<a href="../plugs.html#plug-' + esc(p) + '">' + esc(p) + '</a>';
+          }).join(', ') + '</b>' +
+          (c.volt ? ', ' + esc(c.volt) : '') + (c.hz ? ', ' + esc(c.hz) : '')
+        : 'not recorded') +
+      factRow('drives on', c.side
+        ? (c.side === 'LHT' ? 'the left' : 'the right') +
+          ' <span class="host">(' + esc(c.side) + ')</span>'
+        : '&mdash;') +
+      factRow('time zones', (c.tz && c.tz.length)
+        ? esc(c.tz.slice(0, 4).join(', ')) + (c.tz.length > 4
+          ? ' <font color="#808080">and ' + (c.tz.length - 4) + ' more</font>' : '')
+        : '&mdash;') +
       factRow('neighbours', borders || 'none (island or enclave)') +
       factRow('position', (c.lat !== null && c.lng !== null)
         ? dirLat(c.lat, 'N', 'S') + ', ' + dirLat(c.lng, 'E', 'W') : '&mdash;') +
@@ -1271,6 +1293,70 @@ built.push(write('about.html', page({
   built.push('picks.js');
 })();
 
+/* ------------------------------------------------------------------ plugs */
+/* The reason this museum looks the way it does: a page for the plugs and
+   sockets themselves, with every country that uses each type. */
+(function () {
+  if (!PLUGS.length) return;
+
+  var users = {};
+  COUNTRIES.forEach(function (c) {
+    (c.plug || []).forEach(function (p) {
+      (users[p] = users[p] || []).push(c);
+    });
+  });
+
+  var pieces = PLUGS.map(function (p) {
+    var list = (users[p.letter] || []).slice().sort(function (a, b) {
+      return a.n.localeCompare(b.n);
+    });
+
+    var who = list.slice(0, 24).map(function (c) {
+      return '<a href="countries/' + c.slug + '.html">' + esc(c.n) + '</a>';
+    }).join(', ') + (list.length > 24
+      ? ' <span class="host">and ' + (list.length - 24) + ' more</span>' : '');
+
+    return '<div class="plugrow" id="plug-' + p.letter + '">' +
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+      '<td width="200" valign="top">' +
+      (p.file ? '<a href="' + esc(p.source) + '" rel="noopener noreferrer">' +
+        '<img src="' + esc(p.file) + '" alt="type ' + esc(p.letter) + ' plug" loading="lazy"></a>' +
+        (p.credit ? '<br><span class="credit">' + esc(p.credit) + ' &middot; ' +
+          esc(p.license) + '</span>' : '') : '') +
+      '</td>' +
+      '<td valign="top">' +
+      '<b>Type ' + esc(p.letter) + '</b> &mdash; ' + esc(p.name) +
+      ' <span class="host">' + list.length + ' countries</span><br>' +
+      '<span class="snip">' + esc(p.desc) + '</span><br>' +
+      '<span class="host">' + esc(p.where) + '</span><br>' +
+      '<span class="snip">' + (who || 'not recorded anywhere') + '</span>' +
+      '</td></tr></table>' +
+      '</div>';
+  }).join('\n');
+
+  built.push(write('plugs.html', page({
+    key: 'plugs',
+    file: 'plugs.html',
+    prefix: '',
+    title: 'Plugs and sockets - ' + TOTAL_TITLE,
+    description: 'The fifteen plug and socket types in use around the world, with the countries that use each one.',
+    body:
+      '<h2>Plugs &amp; sockets</h2>\n\n' +
+      '<p class="lead" align="center"><font size="2">Fifteen types, A to\n' +
+      'O, and every country that uses each one. This is the collection the\n' +
+      'museum was modelled on: another museum of plugs and sockets, kept\n' +
+      'elsewhere on the internet for a very long time.</font></p>\n\n' +
+      '<div class="plugs">\n' + pieces + '\n</div>\n\n' +
+      '<div class="message">\n<font size="2">\n' +
+      'Plug types follow the IEC lettering; a country often accepts more than\n' +
+      'one and sockets in older buildings may differ from the national\n' +
+      'standard.<br>\n' +
+      'Photographs come from Wikimedia Commons and are credited under each\n' +
+      'image.\n' +
+      '</font>\n</div>\n'
+  })));
+})();
+
 /* ------------------------------------------------------------------- 404 */
 /* GitHub Pages serves this file for any unknown path, including deep ones like
    /a/b/c, so every link and asset in it must be absolute. */
@@ -1351,7 +1437,7 @@ built.push(write('sitemap.html', page({
 /* ----------------------------------------------------------- sitemap.xml */
 (function () {
   var urls = ['', 'categories.html', 'sites.html', 'exhibition.html', 'gallery.html',
-    'contact.html', 'countries.html', 'live.html',
+    'contact.html', 'countries.html', 'live.html', 'plugs.html',
     'acknowledgments.html',
     'sitemap.html', 'links.html', 'about.html'].concat(
     CATS.map(function (c) { return 'categories/' + c + '.html'; })).concat(

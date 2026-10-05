@@ -13,6 +13,9 @@
 - `build.js`（node）生成 312 个页面：顶层 12 页 + `categories/<cat>.html` 47 个展区页
   + `countries/<slug>.html` 250 个国家页。页面全静态，禁用 JS 也能完整浏览；
   `ROOM_NOTE` 是各展区导读文案。
+- **第四个数据源** `plugs.js`（`window.MUSEUM_PLUGS`，A–O 共 15 型）配套 `plugs/` 图片，
+  供 `plugs.html` 用。**这个站仿的就是插头插座博物馆，这类基础数据必须齐全。**
+  国家页的插头/电压/频率、行驶方向、时区也一并展示。
 - `live.html` 是唯一依赖 JS 的页面：浏览器直连 CoinGecko / Frankfurter /
   Hacker News / USGS / Open-Meteo / wheretheiss.at / NASA APOD，60 秒自动刷新。
   股指与大宗商品没有可用的免密钥 CORS 源，不要再去试 Stooq / Yahoo / Binance。

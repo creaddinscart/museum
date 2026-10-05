@@ -304,6 +304,31 @@ padding: 2px 0;
 border-bottom: 1px dotted #e4e4e4;
 }
 
+.plugs {
+max-width: 720px;
+margin: 0 auto;
+}
+
+.plugrow {
+border: 1px solid #dddddd;
+padding: 10px;
+margin-bottom: 12px;
+background: #ffffff;
+}
+
+.plugrow img {
+display: block;
+max-width: 180px;
+height: auto;
+border: 1px solid #e4e4e4;
+background: #f7f7f7;
+}
+
+.plugrow .credit {
+color: #808080;
+font-size: 11px;
+}
+
 .plainlist {
 max-width: 720px;
 margin: 0 auto;
