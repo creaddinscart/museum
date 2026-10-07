@@ -655,7 +655,14 @@ function page(opts) {
   body += '<table class="topnav" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
     navRow(opts.key, prefix) + '</table>\n\n<hr width="720">\n\n';
 
-  body += opts.body;
+  /* the front page keeps its own markup, but hides it when the router
+     takes over for a ?query address */
+  if (opts.key === 'home') {
+    body += '<div id="home">\n' + opts.body + '</div>\n\n' +
+      '<div id="view" style="display:none"></div>\n';
+  } else {
+    body += opts.body;
+  }
 
   body += '\n<hr width="720">\n\n' +
     '<table class="topnav" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
@@ -665,6 +672,11 @@ function page(opts) {
     '&middot; <a href="' + prefix + 'index.html">m.shit.pub</a></font></p>\n\n' +
     (opts.key === 'home' || opts.key === 'live'
       ? '<script src="' + prefix + 'picks.js"></script>\n' : '') +
+    '<form class="filterbox" action="/" method="get" align="center">\n' +
+    '<font size="2"><input name="=" size="24" placeholder="search the museum" ' +
+    'autocomplete="off" spellcheck="false">\n' +
+    '<button type="submit">search</button></font>\n</form>\n\n' +
+    (opts.key === 'home' ? '<script src="' + prefix + 'router.js"></script>\n' : '') +
     '<script src="' + prefix + 'script.js"></script>\n</body>\n</html>\n';
 
   return body;
@@ -1403,8 +1415,29 @@ built.push(write('links.html', page({
   title: 'Links to other collections and forums - ' + TOTAL_TITLE,
   description: 'Other internet collections, archives and forums worth a visit.',
   body:
+    '<h2>Short addresses</h2>\n\n' +
+    '<p class="lead" align="center"><font size="2">Every section can also be\n' +
+    'reached with a question mark. Anything after the = sign is treated as a\n' +
+    'search term.</font></p>\n\n' +
+    '<table class="formtable" width="720" cellpadding="0" cellspacing="0" border="0">\n' +
+    [['?sites', 'the whole directory, ' + SITES.length + ' sites'],
+     ['?rooms', 'all ' + CATS.length + ' rooms'],
+     ['?room=design', 'one room'],
+     ['?countries', 'every country and territory, ' + COUNTRIES.length + ' of them'],
+     ['?country=france', 'one country, by name, by code (FRA) or by slug'],
+     ['?plugs', 'the fifteen plug types'],
+     ['?plug=g', 'one plug type and everyone who uses it'],
+     ['?gallery', 'the objects held by real museums'],
+     ['?=finance', 'search: ' + SITES.length + ' sites, ' + COUNTRIES.length +
+      ' countries and ' + RELICS.length + ' objects at once'],
+     ['?about', 'about the collector (opens the usual page)']]
+    .map(function (r) {
+      return '<tr><td width="190" align="right" valign="top"><font size="2">' +
+        '<a href="' + r[0] + '">' + esc(r[0]) + '</a></font></td>\n' +
+        '<td valign="top"><font size="2">' + esc(r[1]) + '</font></td></tr>\n';
+    }).join('') + '</table>\n\n' +
+    '<hr width="720">\n\n' +
     '<h2>Links to other collections and forums</h2>\n\n' +
-    '<p class="lead" align="center"><font size="2">Coming soon.</font></p>\n\n' +
     '<div class="message">\n<font size="2">\n' +
     'A list of kindred collections is being prepared.<br>\n' +
     'In the meantime, the <a href="categories.html">rooms</a> are open.\n' +
