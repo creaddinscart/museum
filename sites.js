@@ -4024,5 +4024,17 @@ window.MUSEUM_SITES = [
     "name": "Stanford Online",
     "url": "https://online.stanford.edu",
     "desc": "Stanford's digital learning platform delivering world-class certificates and courses."
-  }
+  },
+  {
+    "cat": "reference",
+    "name": "Minecraft Wiki",
+    "url": "https://minecraft.wiki",
+    "desc": "The official community-driven encyclopedia for Minecraft, documenting every version, block, item, mob, and update."
+  },
+  {
+    "cat": "technology",
+    "name": "Minecraft",
+    "url": "https://www.minecraft.net",
+    "desc": "The official home of Minecraft, featuring game downloads, news, updates, community creations, and marketplace."
+  },
 ];
