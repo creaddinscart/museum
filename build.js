@@ -750,8 +750,8 @@ function page(opts) {
     '&middot; <a href="' + prefix + 'index.html">m.shit.pub</a></font></p>\n\n' +
     (opts.key === 'home' || opts.key === 'live'
       ? '<script src="' + prefix + 'picks.js"></script>\n' : '') +
-    '<form class="filterbox" action="/" method="get" align="center">\n' +
-    '<font size="2"><input name="=" size="24" placeholder="search the museum" ' +
+    '<form class="filterbox" action="./" method="get" align="center">\n' +
+    '<font size="2"><input name="q" size="24" placeholder="search the museum" ' +
     'autocomplete="off" spellcheck="false">\n' +
     '<button type="submit">search</button></font>\n</form>\n\n' +
     (opts.key === 'home' ? '<script src="' + prefix + 'router.js"></script>\n' : '') +

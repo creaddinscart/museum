@@ -34,8 +34,8 @@
   }
 
   function searchBox(term) {
-    return '<form class="filterbox" action="." method="get" align="center">\n' +
-      '<font size="2"><input name="=" size="28" value="' + esc(term || '') +
+    return '<form class="filterbox" action="./" method="get" align="center">\n' +
+      '<font size="2"><input name="q" size="28" value="' + esc(term || '') +
       '" autocomplete="off" spellcheck="false">' +
       ' <button type="submit">search</button></font>\n</form>\n';
   }
@@ -68,7 +68,13 @@
 
   var key = '';
   var value = '';
-  if (query.indexOf('=') === 0) {
+  if (query.indexOf('q=') === 0 || query.indexOf('s=') === 0) {
+    key = 'search';
+    value = query.slice(2);
+  } else if (query.indexOf('?=') === 0 || query.indexOf('=%3d') === 0 || query.indexOf('=%3D') === 0) {
+    key = 'search';
+    value = query.replace(/^(\?|=)/, '').replace(/^%3d/i, '').replace(/^=/, '');
+  } else if (query.indexOf('=') === 0) {
     key = 'search';
     value = query.slice(1);
   } else if (query.indexOf('=') > 0) {
@@ -82,6 +88,9 @@
   try {
     key = decodeURIComponent(key).toLowerCase();
     value = decodeURIComponent(value.replace(/\+/g, ' '));
+    if (key === '%3d' || key === '=') {
+      key = 'search';
+    }
   } catch (e) { /* malformed escapes: use as typed */ }
 
   if (!key) return;                       /* plain front page, nothing to do */
